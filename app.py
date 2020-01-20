@@ -7,7 +7,7 @@ app = Flask(__name__,
             static_folder='static',
             template_folder='static')
 
-db = Database('db.db')
+# db = Database('db.db')
 
 
 # admin
