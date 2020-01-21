@@ -21,7 +21,6 @@
                 <div class="md-layout md-alignment-top-center">
                     <md-card>
                         <md-card-header>
-
                             <md-card-header-text>
                                 <div class="md-title">Account</div>
                                 <div class="md-subhead">User</div>
@@ -42,37 +41,50 @@
                 </div>
             </div>
             <div v-else>
+                <div v-for="i in newPosts">
+                    <div class="md-layout md-alignment-top-center">
+                        <md-card>
+                            <md-card-header>
+                                <md-card-header-text>
+                                    <i class="badge"></i>
+                                    <div class="md-title">Actions left aligned</div>
+                                    <div class="md-subhead">Subtitle here</div>
+                                </md-card-header-text>
+                                <md-button class="md-icon-button" md-menu-trigger @click="set_notify_old(i)">
+                                    X
+                                </md-button>
+                            </md-card-header>
+                            <md-card-content>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio.
+                                Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in
+                                deleniti minus sint. Excepturi.
+                            </md-card-content>
+                        </md-card>
+                    </div>
+                </div>
                 <div class="md-layout md-alignment-top-center">
-                    <md-card>
-                        <md-card-header>
-                            <div class="md-title">Card without hover effect</div>
-                        </md-card-header>
+                    <md-divider></md-divider>
+                </div>
+                <div v-for="i in oldPosts">
+                    <div class="md-layout md-alignment-top-center">
+                        <md-card>
+                            <md-card-header>
+                                <md-card-header-text>
+                                    <div class="md-title">GOT IT!</div>
+                                    <div class="md-subhead">Subtitle here</div>
+                                </md-card-header-text>
+                                <md-button class="md-icon-button" md-menu-trigger @click="delete_notify(i)">
+                                    X
+                                </md-button>
+                            </md-card-header>
 
-                        <md-card-content>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio.
-                            Dolores, sed accusantium quasi non.
-                        </md-card-content>
-                    </md-card>
-                    <md-card>
-                        <md-card-header>
-                            <div class="md-title">Card without hover effect</div>
-                        </md-card-header>
-
-                        <md-card-content>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio.
-                            Dolores, sed accusantium quasi non.
-                        </md-card-content>
-                    </md-card>
-                    <md-card>
-                        <md-card-header>
-                            <div class="md-title">Card without hover effect</div>
-                        </md-card-header>
-
-                        <md-card-content>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio.
-                            Dolores, sed accusantium quasi non.
-                        </md-card-content>
-                    </md-card>
+                            <md-card-content>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio.
+                                Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in
+                                deleniti minus sint. Excepturi.
+                            </md-card-content>
+                        </md-card>
+                    </div>
                 </div>
             </div>
         </md-app-content>
@@ -89,7 +101,8 @@
             login: false,
             user: null,
             state: 'settings',
-            newPosts: 3
+            newPosts: 3,
+            oldPosts: 0
         }),
         methods: {
             change_state(state) {
@@ -98,6 +111,13 @@
             sigh_out() {
                 this.$store.commit('unset_user');
                 this.$router.push('/login')
+            },
+            set_notify_old(id) {
+                this.newPosts--;
+                this.oldPosts++;
+            },
+            delete_notify(id) {
+                this.oldPosts--;
             }
         },
         created() {

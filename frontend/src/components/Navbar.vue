@@ -1,6 +1,9 @@
 <template>
     <div>
         <div class="md-toolbar-row">
+            <div class="md-toolbar-section-start">
+                LOGO
+            </div>
             <md-tabs class="md-primary" md-alignment="centered">
                 <div v-if="login">
                     <md-tab id="tab-orders" md-label="My orders" to="/orders"></md-tab>
