@@ -41,7 +41,7 @@
                 this.$router.push('/')
             },
             recovery_user() {
-                this.$router.push('/')
+                this.$router.push('/recovery')
             }
         },
     }

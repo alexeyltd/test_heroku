@@ -25,6 +25,8 @@
                 this.$router.push({path: 'login', props: true, login: false})
             } else {
                 this.user = this.$store.state.user;
+                this.$router.push({path: 'orders'})
+
             }
         }
     }

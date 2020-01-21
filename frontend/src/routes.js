@@ -7,6 +7,7 @@ import Faq from "./components/Faq";
 import Dashboard from "./components/account/Dashboard";
 import Settings from "./components/account/Settings";
 import Notifications from "./components/account/Notifications";
+import userRecovery from "./components/login/userRecovery";
 
 
 const routes = [
@@ -20,6 +21,12 @@ const routes = [
         path: "/login",
         component: Login,
         name: "loginPage",
+        meta: {}
+    },
+        {
+        path: "/recovery",
+        component: userRecovery,
+        name: "recoveryPage",
         meta: {}
     },
     {

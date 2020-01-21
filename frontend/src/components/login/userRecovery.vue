@@ -1,14 +1,20 @@
 <template>
-    <div>
-        <md-app>
-            asd
-        </md-app>
-    </div>
+    <md-app>
+        <md-app-toolbar>
+            <navbar :login="false" :user="null"></navbar>
+        </md-app-toolbar>
+        <md-app-content>
+            recovery
+        </md-app-content>
+    </md-app>
 </template>
 
 <script>
+    import Navbar from "../Navbar";
+
     export default {
-        name: "userRecovery"
+        name: "userRecovery",
+        components: {Navbar},
     }
 </script>
 

@@ -38,8 +38,9 @@
 
         <md-card-actions>
             <div class="md-layout md-alignment-top-left">
-                <!--todo visual fix-->
-                <md-checkbox v-model="accept" class="md-primary">Accept privacy</md-checkbox>
+                <div v-if="!accept">
+                    <md-checkbox v-model="accept" class="md-primary">Accept privacy</md-checkbox>
+                </div>
             </div>
             <md-button type="button" class="md-primary" @click="create_user">Create account</md-button>
         </md-card-actions>
