@@ -60,11 +60,29 @@
         }),
         methods: {
             create_user() {
-                this.$store.commit('set_user', {
-                    user: {first_name: this.first_name, last_name: this.last_name, email: this.email},
-                    token: '1254s'
-                });
-                this.$router.push('/')
+                if (this.accept) {
+                    this.$api.post("/account/registration", {
+                        email: this.email,
+                        password: this.password,
+                        first_name: this.first_name,
+                        last_name: this.last_name,
+                        business_name: this.business_name
+                    }).then((data) => {
+                        if (data.data.result === 'success') {
+                            this.$store.commit('set_user', {
+                                user: data.data.user,
+                                token: data.data.token
+                            });
+                            this.$router.push('/account')
+                        } else {
+                            this.$snotify.error(data.data.msg)
+                        }
+                    }).catch(e => {
+                        this.$snotify.error(`Error status ${e.response.status}`);
+                    });
+                } else {
+                    this.$snotify.warning('Accept privacy politics')
+                }
             }
         },
     }

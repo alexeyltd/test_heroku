@@ -21,12 +21,17 @@
         }),
         methods: {},
         created: function () {
+            if (localStorage.getItem('login')) {
+                this.$store.commit('set_user_from_localstorage');
+                this.$router.push({path: 'orders'});
+                return;
+            }
+
             if (!this.$store.state.login) {
                 this.$router.push({path: 'login', props: true, login: false})
             } else {
                 this.user = this.$store.state.user;
                 this.$router.push({path: 'orders'})
-
             }
         }
     }

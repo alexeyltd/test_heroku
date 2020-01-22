@@ -29,7 +29,8 @@ const store = new Vuex.Store({
         user: {
             first_name: "",
             last_name: "",
-            email: ""
+            email: "",
+            confirm_status: 0
         },
         token: ""
     },
@@ -39,18 +40,29 @@ const store = new Vuex.Store({
             state.user = {
                 first_name: payload.user.first_name,
                 last_name: payload.user.last_name,
-                email: payload.user.email
+                email: payload.user.email,
+                confirm_status: payload.user.confirm_status
             };
-            state.token = payload.token
+            state.token = payload.token;
+            localStorage.user = JSON.stringify(state.user);
+            localStorage.login = state.login;
+            localStorage.token = state.token;
         },
         unset_user(state) {
             state.login = false;
             state.user = {
                 first_name: "",
                 last_name: "",
-                email: ""
+                email: "",
+                confirm_status: 0
             };
-            state.token = ""
+            state.token = "";
+            localStorage.clear();
+        },
+        set_user_from_localstorage(state) {
+            state.login = true;
+            state.token = localStorage.getItem('token');
+            state.user = JSON.parse(localStorage.getItem('user'))
         }
     }
 });

@@ -10,14 +10,15 @@
                         {{ tab.label }} <i class="badge" v-if="tab.data.badge">{{ tab.data.badge }}</i>
                     </template>
                     <md-tab id="tab-settings" md-label="Settings" @click="change_state('settings')"></md-tab>
-                    <md-tab id="tab-notification" md-label="Notification" :md-template-data="{ badge: newPosts }"
+                    <md-tab id="tab-notification" md-label="Notification"
+                            :md-template-data="{ badge: notifications_new.length }"
                             @click="change_state('notifications')"></md-tab>
                     <md-tab id="tab-sign_out" md-label="Sign out" @click="sigh_out"></md-tab>
 
                 </md-tabs>
             </div>
 
-            <div v-if="state==='settings'">
+            <div v-if="this.state==='settings'">
                 <div class="md-layout md-alignment-top-center">
                     <md-card>
                         <md-card-header>
@@ -31,17 +32,41 @@
                         </md-card-header>
                         <md-card-content>
                             <md-toolbar :md-elevation="1">
-                                <span class="md-title">{{user.first_name}} {{user.last_name}}</span>
+                                <span class="md-title">{{this.user.first_name}} {{this.user.last_name}}</span>
                             </md-toolbar>
                             <md-toolbar :md-elevation="1">
-                                <span class="md-title">{{user.email}}</span>
+                                <span class="md-title">{{this.user.email}}</span>
                             </md-toolbar>
                         </md-card-content>
                     </md-card>
                 </div>
+                <div v-if="this.user.confirm_status===0">
+                    <div class="md-layout md-alignment-top-center">
+                        <md-card>
+                            <md-card-header>
+                                <md-card-header-text>
+                                    <div class="md-title">Confirm code</div>
+                                </md-card-header-text>
+                            </md-card-header>
+                            <md-card-content>
+                                <md-field>
+                                    <label>Input code here</label>
+                                    <md-input v-model="code"></md-input>
+                                    <md-button @click="confirm()">Submit</md-button>
+                                </md-field>
+                            </md-card-content>
+                        </md-card>
+                    </div>
+                </div>
             </div>
             <div v-else>
-                <div v-for="i in newPosts">
+                <div v-if="notifications_old.length===0 && notifications_new.length===0">
+                    <div class="md-layout md-alignment-top-center">
+                        <md-button class="md-raised" @click="get_notify()">Dont have notifications. Click for update.
+                        </md-button>
+                    </div>
+                </div>
+                <div v-for="i in notifications_new">
                     <div class="md-layout md-alignment-top-center">
                         <md-card>
                             <md-card-header>
@@ -62,10 +87,7 @@
                         </md-card>
                     </div>
                 </div>
-                <div class="md-layout md-alignment-top-center">
-                    <md-divider></md-divider>
-                </div>
-                <div v-for="i in oldPosts">
+                <div v-for="i in notifications_old">
                     <div class="md-layout md-alignment-top-center">
                         <md-card>
                             <md-card-header>
@@ -93,16 +115,16 @@
 
 <script>
     import Navbar from "../Navbar";
+    import {mapState} from 'vuex';
 
     export default {
         name: "Account",
         components: {Navbar},
         data: () => ({
-            login: false,
-            user: null,
             state: 'settings',
-            newPosts: 3,
-            oldPosts: 0
+            code: null,
+            notifications_new: [],
+            notifications_old: []
         }),
         methods: {
             change_state(state) {
@@ -113,16 +135,45 @@
                 this.$router.push('/login')
             },
             set_notify_old(id) {
-                this.newPosts--;
-                this.oldPosts++;
+                this.notifications_new.shift();
+                this.notifications_old.unshift(1);
             },
             delete_notify(id) {
-                this.oldPosts--;
+                this.notifications_old.shift();
+            },
+            confirm() {
+                if (this.code) {
+                    this.$api.post("/account/confirm", {
+                        email: this.$store.state.user.email,
+                        code: this.code
+                    }).then((data) => {
+                        if (data.data.result === 'success') {
+                            this.user.confirm_status = 1;
+                            this.$store.commit('set_user', {
+                                user: this.user,
+                                token: data.data.token
+                            });
+                            this.$snotify.info('Account confirmed!')
+
+                        } else {
+                            this.$snotify.error(data.data.msg)
+                        }
+                    }).catch(e => {
+                        this.$snotify.error(`Error status ${e.response.status}`);
+                    });
+                } else {
+                    this.$snotify.warning('Fill all fields please')
+                }
+            },
+            get_notify() {
+                this.notifications_new.push(1);
             }
         },
+        computed: mapState([
+            'user', 'login'
+        ]),
         created() {
-            this.user = this.$store.state.user;
-            this.login = this.$store.state.login;
+            this.get_notify()
         }
     }
 </script>

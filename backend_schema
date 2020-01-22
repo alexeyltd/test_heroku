@@ -24,7 +24,7 @@ database:
     confirm_status
   article:
     article_id
-    key # unique for return
+    hash_id # unique for return
     title
     meta_text
     text # todo

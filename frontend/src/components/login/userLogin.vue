@@ -9,7 +9,7 @@
 
             <md-field>
                 <label for="password">Password</label>
-                <md-input type="password" name="password" id="password" autocomplete="password"
+                <md-input type="password" name="password" id="password" autocomplete="password" v-model="password"
                 />
             </md-field>
         </md-card-content>
@@ -18,7 +18,9 @@
             <md-button type="button" class="md-primary" @click="login_user">Log In</md-button>
         </md-card-actions>
         <md-card-actions class="md-layout md-alignment-top-center">
-            <md-button type="button" class="md-primary" @click="recovery_user"><small>Recovery account</small></md-button>
+            <md-button type="button" class="md-primary" @click="recovery_user">
+                <small>Recovery account</small>
+            </md-button>
         </md-card-actions>
     </div>
 </template>
@@ -30,15 +32,32 @@
             email: null,
             first_name: null,
             last_name: null,
-            accept: null
+            accept: null,
+            password: null
         }),
         methods: {
             login_user() {
-                this.$store.commit('set_user', {
-                    user: {first_name: 'Artem', last_name: 'Shuvaev', email: this.email},
-                    token: '1254s'
-                });
-                this.$router.push('/')
+                if (this.email && this.password) {
+                    this.$api.post("/account/login", {
+                        email: this.email,
+                        password: this.password
+                    }).then((data) => {
+                        if (data.data.result === 'success') {
+                            this.$store.commit('set_user', {
+                                user: data.data.user,
+                                token: data.data.token
+                            });
+                            this.$router.push('/account')
+                        } else {
+                            this.$snotify.error(data.data.msg)
+                        }
+                    }).catch(e => {
+                        this.$snotify.error(`Error status ${e.response.status}`);
+                    });
+                } else {
+                    this.$snotify.warning('Fill code please')
+                }
+
             },
             recovery_user() {
                 this.$router.push('/recovery')

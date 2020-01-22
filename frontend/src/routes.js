@@ -4,10 +4,8 @@ import Account from "./components/account/Account";
 import My_orders from "./components/account/My_orders";
 import Products from "./components/Products";
 import Faq from "./components/Faq";
-import Dashboard from "./components/account/Dashboard";
-import Settings from "./components/account/Settings";
-import Notifications from "./components/account/Notifications";
 import userRecovery from "./components/login/userRecovery";
+import Order from "./components/account/Order";
 
 
 const routes = [
@@ -23,7 +21,7 @@ const routes = [
         name: "loginPage",
         meta: {}
     },
-        {
+    {
         path: "/recovery",
         component: userRecovery,
         name: "recoveryPage",
@@ -40,7 +38,8 @@ const routes = [
         component: My_orders,
         name: "ordersPage",
         meta: {}
-    }, {
+    },
+    {
         path: "/products",
         component: Products,
         name: "productsPage",
@@ -52,25 +51,12 @@ const routes = [
         name: "faqPage",
         meta: {}
     },
-    {
-        path: "/dashboard",
-        component: Dashboard,
-        name: "dashboardPage",
+        {
+        path: "/order/:order_id",
+        component: Order,
+        name: "orderPage",
         meta: {}
     },
-    {
-        path: "/notification",
-        component: Notifications,
-        name: "notificationPage",
-        meta: {}
-    },
-    {
-        path: "/settings",
-        component: Settings,
-        name: "settingsPage",
-        meta: {}
-    },
-
 ];
 
 export default routes;

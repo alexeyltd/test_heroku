@@ -5,17 +5,16 @@
                 LOGO
             </div>
             <md-tabs class="md-primary" md-alignment="centered">
-                <div v-if="login">
+                <md-tab id="tab-products" md-label="Products" to="/products"></md-tab>
+                <div v-if="login_status">
                     <md-tab id="tab-orders" md-label="My orders" to="/orders"></md-tab>
-                    <md-tab id="tab-user" :md-label="user.first_name+' '+user.last_name" to="/account">
+                    <md-tab id="tab-user" :md-label="user_now.first_name+' '+user_now.last_name" to="/account">
                     </md-tab>
-                    <!--<md-tab id="tab-sign_out" md-label="Sign out" @click="sigh_out"></md-tab>-->
                 </div>
                 <div v-else>
-                    <md-tab id="tab-products" md-label="Products" to="/products"></md-tab>
-                    <md-tab id="tab-faq" md-label="FAQ" to="/faq"></md-tab>
                     <md-tab id="tab-sign_in" md-label="Sign in" to="/login"></md-tab>
                 </div>
+                <md-tab id="tab-faq" md-label="FAQ" to="/faq"></md-tab>
             </md-tabs>
         </div>
     </div>
@@ -31,9 +30,10 @@
                 last_name: String,
                 email: String
             }
-        }, data: () => ({
-            user: this.user,
-            login: this.login
+        },
+        data: () => ({
+            login_status: null,
+            user_now: null,
         }),
         methods: {
             sigh_out() {
@@ -41,6 +41,23 @@
                 this.$router.push('/login')
             }
         },
+        created() {
+            if (localStorage.getItem('login')) {
+                this.$store.commit('set_user_from_localstorage');
+                this.login_status = true;
+                this.user_now = this.$store.state.user;
+            } else {
+                this.login_status = this.login;
+                if (this.user === null) {
+                    this.user = {
+                        first_name: 'Empty',
+                        last_name: 'Empty'
+                    }
+                } else {
+                    this.user_now = this.$store.state.user;
+                }
+            }
+        }
     }
 </script>
 

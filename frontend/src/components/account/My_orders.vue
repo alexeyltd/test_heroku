@@ -4,11 +4,24 @@
             <navbar :login="login" :user="user"></navbar>
         </md-app-toolbar>
         <md-app-content>
-            <div class="md-layout md-alignment-bottom-center">
-                <md-button class="md-fab md-primary" @click="show_form()">
-                    <md-icon>{{text_form_show}}</md-icon>
-                </md-button>
+            <div v-if="this.user.confirm_status===1">
+                <div v-if="orders.length===0">
+                    <div class="md-layout md-alignment-top-center">
+                        <div class="md-title">No orders here...</div>
+                    </div>
+                </div>
+                <div class="md-layout md-alignment-bottom-center">
+                    <md-button class="md-fab md-primary" @click="show_form()">
+                        <md-icon>{{text_form_show}}</md-icon>
+                    </md-button>
+                </div>
             </div>
+            <div v-else>
+                <div class="md-layout md-alignment-top-center">
+                    <div class="md-title">Confirm your account!</div>
+                </div>
+            </div>
+
             <div v-if="form_show">
                 <md-card>
                     <md-card-content>
@@ -38,7 +51,7 @@
                 </md-card>
             </div>
             <div class="md-layout md-alignment-top-center">
-                <div v-for="id in card_number">
+                <div v-for="order in orders">
                     <md-card>
                         <md-card-header>
                             <md-card-header-text>
@@ -53,10 +66,11 @@
                             <div class="md-layout md-alignment-top-center">
                                 70$
                             </div>
-                            <md-button>Buy</md-button>
+                            <md-button @click="go_order(id)">Buy</md-button>
                         </md-card-actions>
                     </md-card>
                 </div>
+
             </div>
         </md-app-content>
     </md-app>
@@ -64,16 +78,16 @@
 
 <script>
     import Navbar from "../Navbar";
+    import {mapState} from 'vuex';
+
 
     export default {
         name: "My_orders",
         components: {Navbar},
         data: () => ({
-            login: false,
-            user: null,
             form_show: false,
             text_form_show: '+',
-            card_number: 2,
+            orders: [],
 
             active: 'first',
             first: false,
@@ -91,7 +105,7 @@
                     this.second = false;
                     this.third = false;
                     this.active = 'first';
-                    this.card_number++;
+                    this.orders.push(1);
                     return;
                 }
                 this.secondStepError = null;
@@ -103,7 +117,12 @@
             setError() {
                 this.secondStepError = 'This is an error!'
             },
+            go_order(id) {
+                this.$router.push({
+                    path: 'order/' + id.toString()
 
+                })
+            },
             create_article() {
 
             },
@@ -112,11 +131,9 @@
                 this.text_form_show = this.form_show ? '-' : '+';
             }
         },
-        created() {
-            this.user = this.$store.state.user;
-            this.login = this.$store.state.login;
-            // todo get orders
-        }
+        computed: mapState([
+            'user', 'login'
+        ]),
     }
 </script>
 
