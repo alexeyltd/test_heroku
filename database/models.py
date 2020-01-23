@@ -35,6 +35,19 @@ class User(db.Model):
             'notifications': count
         }
 
+    @property
+    def serialize_full(self):
+        return {
+            'user_id': self.user_id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'business_name': self.business_name,
+            'confirm_status': self.confirm_status,
+            'articles': [i.serialize for i in self.articles],
+            'notifications': [i.serialize for i in self.notifications]
+        }
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -83,9 +96,10 @@ class Notification(db.Model):
     def serialize(self):
         return {
             'title': self.title,
-            'status': self.is_checked,
+            'is_checked': self.is_checked,
             'date': self.create_date_timestamp,
-            'text': self.text
+            'text': self.text,
+            'notification_id': self.notification_id
         }
 
     def __repr__(self):

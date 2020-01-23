@@ -60,50 +60,43 @@
                 </div>
             </div>
             <div v-else>
-                <div v-if="notifications_old.length===0 && notifications_new.length===0">
+                <div v-if="notifications_new.length===0 && notifications_old.length===0">
                     <div class="md-layout md-alignment-top-center">
                         <md-button class="md-raised" @click="get_notify()">Dont have notifications. Click for update.
                         </md-button>
                     </div>
                 </div>
-                <div v-for="i in notifications_new">
-                    <div class="md-layout md-alignment-top-center">
+                <div v-for="notif in notifications_new">
+                    <div>
                         <md-card>
                             <md-card-header>
                                 <md-card-header-text>
                                     <i class="badge"></i>
-                                    <div class="md-title">Actions left aligned</div>
-                                    <div class="md-subhead">Subtitle here</div>
+                                    <div class="md-title">{{notif.title}}</div>
                                 </md-card-header-text>
-                                <md-button class="md-icon-button" md-menu-trigger @click="set_notify_old(i)">
+                                <md-button class="md-icon-button" md-menu-trigger @click="set_notify(notif)">
                                     X
                                 </md-button>
                             </md-card-header>
                             <md-card-content>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio.
-                                Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in
-                                deleniti minus sint. Excepturi.
+                                {{notif.text}}
                             </md-card-content>
                         </md-card>
                     </div>
                 </div>
-                <div v-for="i in notifications_old">
-                    <div class="md-layout md-alignment-top-center">
+                <div v-for="notif in notifications_old">
+                    <div>
                         <md-card>
                             <md-card-header>
                                 <md-card-header-text>
-                                    <div class="md-title">GOT IT!</div>
-                                    <div class="md-subhead">Subtitle here</div>
+                                    <div class="md-title">{{notif.title}}</div>
                                 </md-card-header-text>
-                                <md-button class="md-icon-button" md-menu-trigger @click="delete_notify(i)">
+                                <md-button class="md-icon-button" md-menu-trigger @click="delete_notify(notif)">
                                     X
                                 </md-button>
                             </md-card-header>
-
                             <md-card-content>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio.
-                                Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in
-                                deleniti minus sint. Excepturi.
+                                {{notif.text}}
                             </md-card-content>
                         </md-card>
                     </div>
@@ -128,19 +121,45 @@
         }),
         methods: {
             change_state(state) {
+                if (state === 'notifications') {
+                    this.get_notify();
+                }
                 this.state = state;
             },
             sigh_out() {
                 this.$store.commit('unset_user');
                 this.$router.push('/login')
             },
-            set_notify_old(id) {
-                this.notifications_new.shift();
-                this.notifications_old.unshift(1);
+            set_notify(notif) {
+                this.$api.post("/notification/update", {
+                    id: notif.notification_id,
+                    is_checked: true
+                }).then((data) => {
+                    if (data.data.result === 'success') {
+                        this.notifications_new[this.notifications_new.indexOf(notif)].is_checked = true;
+                        this.notifications_new.splice(this.notifications_new.indexOf(notif), 1);
+                        this.notifications_old.push(notif);
+                    } else {
+                        this.$snotify.error(data.data.msg)
+                    }
+                }).catch(e => {
+                    this.$snotify.error(`Error status ${e.response.status}`);
+                });
             },
-            delete_notify(id) {
-                this.notifications_old.shift();
+            delete_notify(notif) {
+                this.$api.post("/notification/delete", {
+                    id: notif.notification_id,
+                }).then((data) => {
+                    if (data.data.result === 'success') {
+                        this.notifications_old.splice(this.notifications_old.indexOf(notif), 1);
+                    } else {
+                        this.$snotify.error(data.data.msg)
+                    }
+                }).catch(e => {
+                    this.$snotify.error(`Error status ${e.response.status}`);
+                });
             },
+
             confirm() {
                 if (this.code) {
                     this.$api.post("/account/confirm", {
@@ -166,7 +185,25 @@
                 }
             },
             get_notify() {
-                this.notifications_new.push(1);
+                this.$api.post("/notification/get", {
+                    email: this.user.email,
+                }).then((data) => {
+                    if (data.data.result === 'success') {
+                        this.notifications_new = [];
+                        this.notifications_old = [];
+                        data.data.data.forEach(notif => {
+                            if (notif.is_checked) {
+                                this.notifications_old.push(notif);
+                            } else {
+                                this.notifications_new.push(notif)
+                            }
+                        })
+                    } else {
+                        this.$snotify.error(data.data.msg)
+                    }
+                }).catch(e => {
+                    this.$snotify.error(`Error status ${e.response.status}`);
+                });
             }
         },
         computed: mapState([

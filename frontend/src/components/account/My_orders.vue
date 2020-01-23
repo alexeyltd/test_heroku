@@ -66,7 +66,7 @@
                             <div class="md-layout md-alignment-top-center">
                                 70$
                             </div>
-                            <md-button @click="go_order(id)">Buy</md-button>
+                            <md-button @click="go_order(order)">Buy</md-button>
                         </md-card-actions>
                     </md-card>
                 </div>

@@ -6,6 +6,7 @@ import Products from "./components/Products";
 import Faq from "./components/Faq";
 import userRecovery from "./components/login/userRecovery";
 import Order from "./components/account/Order";
+import Admin from "./components/Admin/Admin";
 
 
 const routes = [
@@ -51,10 +52,16 @@ const routes = [
         name: "faqPage",
         meta: {}
     },
-        {
+    {
         path: "/order/:order_id",
         component: Order,
         name: "orderPage",
+        meta: {}
+    },
+    {
+        path: "/admin",
+        component: Admin,
+        name: "adminPage",
         meta: {}
     },
 ];

@@ -2,6 +2,7 @@ import Snotify, {SnotifyPosition} from "vue-snotify";
 import VueRouter from "vue-router";
 import Vuex from "vuex";
 import Vue from 'vue'
+import JsonViewer from 'vue-json-viewer';
 
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
@@ -10,6 +11,7 @@ import routes from "./routes.js";
 import App from "./App.vue";
 import api from "./utils/api.js";
 
+Vue.use(JsonViewer);
 Vue.use(VueMaterial);
 Vue.use(VueRouter);
 Vue.use(Vuex);
