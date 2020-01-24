@@ -60,7 +60,26 @@
 
             },
             recovery_user() {
-                this.$router.push('/recovery')
+                if (this.email) {
+                    let result = prompt('Reset password?', 'type your email');
+                    if (result === this.email) {
+                         this.$api.post("/account/recovery", {
+                        email: this.email,
+                    }).then((data) => {
+                        if (data.data.result === 'success') {
+                            this.$snotify.info('We send new password on your email!')
+                        } else {
+                            this.$snotify.error(data.data.msg)
+                        }
+                    }).catch(e => {
+                        this.$snotify.error(`Error status ${e.response.status}`);
+                    });
+                    } else {
+                        this.$snotify.warning('Email is incorrect')
+                    }
+                } else {
+                    this.$snotify.warning('Input email')
+                }
             }
         },
     }

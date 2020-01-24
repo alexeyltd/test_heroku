@@ -4,7 +4,6 @@ import Account from "./components/account/Account";
 import My_orders from "./components/account/My_orders";
 import Products from "./components/Products";
 import Faq from "./components/Faq";
-import userRecovery from "./components/login/userRecovery";
 import Order from "./components/account/Order";
 import Admin from "./components/Admin/Admin";
 
@@ -20,12 +19,6 @@ const routes = [
         path: "/login",
         component: Login,
         name: "loginPage",
-        meta: {}
-    },
-    {
-        path: "/recovery",
-        component: userRecovery,
-        name: "recoveryPage",
         meta: {}
     },
     {

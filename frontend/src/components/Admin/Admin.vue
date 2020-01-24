@@ -18,7 +18,6 @@
                                     <md-input type="email" name="email" id="email" autocomplete="email" v-model="email"
                                     />
                                 </md-field>
-
                                 <md-field>
                                     <label for="password">Password</label>
                                     <md-input type="password" name="password" id="password" autocomplete="password"
@@ -60,6 +59,7 @@
                                 </md-field>
                             </md-card-content>
                             <md-card-actions>
+                                <md-checkbox v-model="input_send_email_status">Send email</md-checkbox>
                                 <md-button @click="send_notification()">Send</md-button>
                             </md-card-actions>
                         </md-card>
@@ -84,7 +84,8 @@
             users_emails: [],
             input_email: null,
             input_text: null,
-            input_title: null
+            input_title: null,
+            input_send_email_status: false
         }),
         methods: {
             login_user() {
@@ -115,12 +116,13 @@
 
             },
             send_notification() {
-                 if (this.input_text && this.input_title && this.input_email) {
+                if (this.input_text && this.input_title && this.input_email) {
                     this.$api.post("/notification/create", {
                         email: this.input_email,
                         notification: {
                             title: this.input_title,
-                            text: this.input_text
+                            text: this.input_text,
+                            send_email_status: false
                         }
                     }).then((data) => {
                         if (data.data.result === 'success') {
