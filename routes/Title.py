@@ -14,6 +14,17 @@ def title_get():
 @app.route('/api/v1/title/create', methods=['POST'])
 def title_create():
     data = request.json
+    brief = Brief.query.get(data['brief_id'])
+    article = Article.query.filter_by(hash_id=data['article_id']).first()
+    if article is None or brief is None:
+        return jsonify({'result': 'error', 'msg': 'article or brief is invalid!'})
+    title_data = data['title']
+    title = Title(title_text=title_data['title'], keywords=title_data['keywords'],
+                  meta_description=title_data['meta_description'])
+    article.status = 1
+    article.titles.append(title)
+    db.session.commit()
+    # todo send notification
     return jsonify({'result': 'success'})
 
 

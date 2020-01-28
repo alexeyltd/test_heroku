@@ -5,3 +5,5 @@ class Config:
 
     gmail_user = "exeltiveltd@gmail.com"
     gmail_password = "6PR2kK5iS&30"
+
+    koef = 0.01

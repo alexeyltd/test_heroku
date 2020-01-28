@@ -1,12 +1,7 @@
 <template>
-    <md-app>
-        <md-app-toolbar>
-            <navbar :login="login" :user="user"></navbar>
-        </md-app-toolbar>
-        <md-app-content>
-            faq
-        </md-app-content>
-    </md-app>
+    <div>
+        faq
+    </div>
 </template>
 
 <script>

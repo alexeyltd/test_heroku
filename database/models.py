@@ -58,15 +58,18 @@ class User(db.Model):
 
 class Article(db.Model):
     article_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
     hash_id = db.Column(db.String(120), index=True, unique=True, nullable=False)
+    approve_title_id = db.Column(db.Integer, unique=True, nullable=True)
+    status = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    # 0=need to create title, 1=need to approve title,
+    # 2,3,4=need to create article, 5=need to approve article
+    price = db.Column(db.Float, unique=False, nullable=True, default=None)
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     user = db.relationship('User', backref='articles')
-    approve_title_id = db.Column(db.Integer, unique=True, nullable=True)
     create_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    status = db.Column(db.Integer, unique=False, nullable=False, default=0)
-    key_words = db.Column(db.String(120), unique=False, nullable=True)
-    price = db.Column(db.Integer, unique=False, nullable=True, default=None)
 
     @property
     def serialize(self):
@@ -76,20 +79,24 @@ class Article(db.Model):
             'create_date': self.create_date,
             'update_date': self.update_date,
             'titles': [i.serialize for i in self.titles],
-            'brief': self.brief.serialize,
-            'key_words': self.key_words,
-            'price': self.price
+            'brief': [i.serialize for i in self.brief],
+            'price': self.price,
+            'approve_title_id': self.approve_title_id
         }
 
 
 class Title(db.Model):
     title_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
     title_text = db.Column(db.String(120), unique=False, nullable=True)
-    create_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    update_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    try_number = db.Column(db.Integer, unique=False, nullable=False, default=0)
+    try_number = db.Column(db.Integer, unique=False, nullable=False, default=0)  # todo delete
+    keywords = db.Column(db.String(120), unique=False, nullable=True)
+    meta_description = db.Column(db.String(120), unique=False, nullable=True)
+
     article_id = db.Column(db.Integer, db.ForeignKey('article.article_id'))
     article = db.relationship('Article', backref='titles')
+    create_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    update_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     @property
     def serialize(self):
@@ -98,35 +105,47 @@ class Title(db.Model):
             'title_text': self.title_text,
             'create_date': self.create_date,
             'update_date': self.update_date,
-            'try_number': self.try_number
+            'try_number': self.try_number,
+            'keywords': self.keywords,
+            'meta_description': self.meta_description
         }
 
 
 class Brief(db.Model):
     brief_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
     content_type = db.Column(db.String(80), unique=False, nullable=False)
     content_length = db.Column(db.Integer, unique=False, nullable=False, default=0)
     content_language = db.Column(db.String(80), unique=False, nullable=False)
-    domain = db.Column(db.String(120), unique=False, nullable=False)
-    topics = db.Column(db.String(120), unique=False, nullable=False)  # todo
-    competitors = db.Column(db.String(120), unique=False, nullable=True)  # todo
+    current_domain_url = db.Column(db.String(120), unique=False, nullable=True)
+    topic_suggestions = db.Column(db.String(120), unique=False, nullable=True)
+    intended_result = db.Column(db.String(120), unique=False, nullable=True)
+    suggested_keywords = db.Column(db.String(120), unique=False, nullable=True)
+    specific_requests = db.Column(db.String(120), unique=False, nullable=True)
+    competitors = db.Column(db.String(120), unique=False, nullable=True)
+    target_customer = db.Column(db.String(120), unique=False, nullable=True)
+
     article_id = db.Column(db.Integer, db.ForeignKey('article.article_id'))
-    article = db.relationship('Article', backref='brief')
+    article = db.relationship('Article', backref='brief', uselist=False)
     create_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     @property
     def serialize(self):
         return {
-            'id': self.title_id,
-            'content_type': self.content_type,
+            'id': self.brief_id,
             'create_date': self.create_date,
             'update_date': self.update_date,
+            'content_type': self.content_type,
             'content_length': self.content_length,
             'content_language': self.content_language,
-            'domain': self.domain,
+            'current_domain_url': self.current_domain_url,
             'competitors': self.competitors,
-            'topics': self.topics
+            'topic_suggestions': self.topic_suggestions,
+            'intended_result': self.intended_result,
+            'suggested_keywords': self.suggested_keywords,
+            'specific_requests': self.specific_requests,
+            'target_customer': self.target_customer
         }
 
 

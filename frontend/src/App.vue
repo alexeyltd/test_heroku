@@ -1,14 +1,23 @@
 <template>
     <div>
-        <router-view></router-view>
+        <md-app>
+            <md-app-toolbar>
+                <navbar></navbar>
+            </md-app-toolbar>
+            <md-app-content>
+                <router-view></router-view>
+            </md-app-content>
+        </md-app>
         <vue-snotify></vue-snotify>
     </div>
 </template>
 
 <script>
-  export default {
+    import Navbar from "./components/Navbar";
 
-  }
+    export default {
+        components: {Navbar}
+    }
 </script>
 
 <style lang="scss">

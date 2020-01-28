@@ -9,7 +9,6 @@
                         />
                     </md-field>
                 </div>
-
                 <div class="md-layout-item md-small-size-100">
                     <md-field>
                         <label for="last-name">Last Name</label>
@@ -38,9 +37,7 @@
 
         <md-card-actions>
             <div class="md-layout md-alignment-top-left">
-                <div v-if="!accept">
-                    <md-checkbox v-model="accept" class="md-primary">Accept privacy</md-checkbox>
-                </div>
+                <md-checkbox v-model="accept" class="md-primary">Accept privacy</md-checkbox>
             </div>
             <md-button type="button" class="md-primary" @click="create_user">Create account</md-button>
         </md-card-actions>

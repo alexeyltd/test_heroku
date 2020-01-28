@@ -1,134 +1,148 @@
 <template>
-    <md-app>
-        <md-app-toolbar>
-            <navbar :login="login" :user="user"></navbar>
-        </md-app-toolbar>
-        <md-app-content>
-            <div v-if="this.user.confirm_status===1">
-                <div v-if="orders.length===0">
-                    <div class="md-layout md-alignment-top-center">
-                        <div class="md-title">No orders here...</div>
-                    </div>
-                </div>
-                <div class="md-layout md-alignment-bottom-center">
-                    <md-button class="md-fab md-primary" @click="show_form()">
-                        <md-icon>{{text_form_show}}</md-icon>
-                    </md-button>
-                </div>
-            </div>
-            <div v-else>
+    <div>
+        <div v-if="this.user.confirm_status===1">
+            <div v-if="orders.length===0">
                 <div class="md-layout md-alignment-top-center">
-                    <div class="md-title">Confirm your account!</div>
+                    <div class="md-title">No orders here...</div>
                 </div>
             </div>
-
-            <div v-if="form_show">
-                <form novalidate class="md-layout md-alignment-top-center" @submit.prevent="validateUser">
-                    <md-card class="md-layout-item md-size-50 md-small-size-100">
-                        <md-card-header>
-                            <div class="md-title">Brief</div>
-                        </md-card-header>
-
-                        <md-card-content>
-                            <div class="md-layout md-gutter">
-                                <div class="md-layout-item md-small-size-100">
-                                    <md-field :class="getValidationClass('firstName')">
-                                        <label for="first-name">Field 1</label>
-                                        <md-input name="first-name" id="first-name"
-                                                  v-model="form.firstName" :disabled="sending"/>
-                                    </md-field>
-                                </div>
-
-                                <div class="md-layout-item md-small-size-100">
-                                    <md-field :class="getValidationClass('lastName')">
-                                        <label for="last-name">Field 2</label>
-                                        <md-input name="last-name" id="last-name"
-                                                  v-model="form.lastName" :disabled="sending"/>
-
-                                    </md-field>
-                                </div>
-                            </div>
-
-                            <div class="md-layout md-gutter">
-                                <div class="md-layout-item md-small-size-100">
-                                    <md-field :class="getValidationClass('gender')">
-                                        <label>Type</label>
-                                        <md-select v-model="form.gender" md-dense
-                                                   :disabled="sending">
-                                            <md-option></md-option>
-                                            <md-option value="M">Type1</md-option>
-                                            <md-option value="F">Type2</md-option>
-                                        </md-select>
-                                    </md-field>
-                                </div>
-
-                                <div class="md-layout-item md-small-size-100">
-                                    <md-field>
-                                        <label>Words</label>
-                                        <md-input type="number"
-                                                  v-model="form.age"
-                                                  min="500" max="2000" step="250" value="500"/>
-                                    </md-field>
-                                </div>
-                                <div class="md-layout-item md-small-size-100"><div class="md-title">{{form.age*0.01}}$</div></div>
-                            </div>
-
-                            <md-field :class="getValidationClass('email')">
-                                <label for="email">Field 3</label>
-                                <md-input type="email" name="email" id="email" autocomplete="email" v-model="form.email"
-                                          :disabled="sending"/>
-
-                            </md-field>
-                        </md-card-content>
-
-                        <md-progress-bar md-mode="indeterminate" v-if="sending"/>
-
-                        <md-card-actions>
-                            <md-button type="submit" class="md-primary" :disabled="sending">Create brief</md-button>
-                        </md-card-actions>
-                    </md-card>
-
-                    <md-snackbar :md-active.sync="userSaved">The user {{ lastUser }} was saved with success!
-                    </md-snackbar>
-                </form>
+            <div class="md-layout md-alignment-bottom-center">
+                <md-button class="md-fab md-primary" @click="show_form()">
+                    <md-icon>{{text_form_show}}</md-icon>
+                </md-button>
             </div>
+        </div>
+        <div v-else>
             <div class="md-layout md-alignment-top-center">
-                <div v-for="order in orders">
-                    <md-card>
-                        <md-card-header>
-                            <md-card-header-text>
-                                <div class="md-title">Article</div>
-                                <div class="md-subhead">Status</div>
-                            </md-card-header-text>
-                        </md-card-header>
-                        <md-card-content>
-                            <p>Click on button to go check order</p>
-                        </md-card-content>
-                        <md-card-actions>
-                            <div class="md-layout md-alignment-top-center">
-                                70$
-                            </div>
-                            <md-button @click="go_order(order)">Buy</md-button>
-                        </md-card-actions>
-                    </md-card>
-                </div>
-
+                <div class="md-title">Confirm your account!</div>
             </div>
-        </md-app-content>
-    </md-app>
+        </div>
+
+        <div v-if="form_show">
+            <form novalidate class="md-layout md-alignment-top-center">
+                <md-card class="md-layout-item md-size-50 md-small-size-100">
+                    <md-card-header>
+                        <div class="md-title">Brief</div>
+                    </md-card-header>
+
+                    <md-card-content>
+                        <div class="md-layout md-gutter">
+                            <div class="md-layout-item md-small-size-100">
+                                <md-field>
+                                    <label>Content type</label>
+                                    <md-select v-model="form.content_type"
+                                               :disabled="sending">
+                                        <md-option></md-option>
+                                        <md-option value="article">Article</md-option>
+                                    </md-select>
+                                </md-field>
+                            </div>
+                            <div class="md-layout-item md-small-size-100">
+                                <md-field>
+                                    <label>Language</label>
+                                    <md-select v-model="form.content_language"
+                                               :disabled="sending">
+                                        <md-option></md-option>
+                                        <md-option value="en">English</md-option>
+                                    </md-select>
+                                </md-field>
+                            </div>
+                        </div>
+                        <md-field>
+                            <label>Current domain url</label>
+                            <md-input v-model="form.current_domain_url"></md-input>
+                        </md-field>
+                        <md-field>
+                            <label>Topic suggestions</label>
+                            <md-input v-model="form.topic_suggestions" md-autogrows></md-input>
+                        </md-field>
+                        <md-field>
+                            <label>Intended result</label>
+                            <md-input v-model="form.intended_result" md-autogrow></md-input>
+                        </md-field>
+                        <md-field>
+                            <label>Target customer</label>
+                            <md-input v-model="form.target_customer"></md-input>
+                        </md-field>
+                        <md-field>
+                            <label>Suggested keywords</label>
+                            <md-input v-model="form.suggested_keywords"></md-input>
+                        </md-field>
+                        <md-field>
+                            <label>Specific request(s)</label>
+                            <md-input v-model="form.specific_request" md-autogrow></md-input>
+                        </md-field>
+                        <md-field>
+                            <label>Competitors</label>
+                            <md-input v-model="form.competitors" md-autogrow></md-input>
+                        </md-field>
+                        <div class="md-layout md-gutter">
+                            <div class="md-layout-item md-small-size-100">
+                                <md-field>
+                                    <label>Words</label>
+                                    <md-input type="number"
+                                              v-model="form.content_length"
+                                              min="500" max="2000" step="250" value="500"/>
+                                </md-field>
+                            </div>
+                            <div class="md-layout-item md-small-size-100">
+                                <div class="md-title">{{form.content_length*0.01}}$</div>
+                            </div>
+                        </div>
+                    </md-card-content>
+
+                    <md-card-actions>
+
+                        <md-button type="button" class="md-primary"
+                                   @click="create_brief" :disabled="sending">Create brief
+                        </md-button>
+                    </md-card-actions>
+                </md-card>
+            </form>
+        </div>
+        <div class="md-layout md-alignment-top-center">
+            <div v-for="order in orders">
+                <md-card>
+                    <md-card-header>
+                        <md-card-header-text>
+                            <div class="md-title">Article</div>
+                            <div class="md-subhead">{{order.id}}</div>
+                        </md-card-header-text>
+                    </md-card-header>
+                    <md-card-content>
+                        <div v-if="order.status===0 && order.approve_title_id===null">
+                            <div>Need to wait title {{order.titles.length+1}}</div>
+                        </div>
+                        <div v-else-if="order.status===1 && order.approve_title_id===null">
+                            <div v-if="order.titles.length<3">
+                                <div>Need to approve title {{order.titles.length}}</div>
+                                <div>{{order.titles[order.titles.length-1].title_text}}</div>
+                                <div>{{order.titles[order.titles.length-1].keywords}}</div>
+                                <div>{{order.titles[order.titles.length-1].meta_description}}</div>
+                            </div>
+                            <div v-else>
+                                Need to choose title or delete brief.
+                            </div>
+                        </div>
+                        <!--todo choose article if 3 tries-->
+                        <div v-else-if="order.status>1 && order.status<5">Need to wait article {{order.status-1}}</div>
+                        <div v-else>Need to approve article</div>
+                    </md-card-content>
+                    <md-card-actions>
+                        <div class="md-layout md-alignment-top-center">
+                            {{order.price}}$
+                        </div>
+                        <md-button @click="go_order(order)">Go</md-button>
+                    </md-card-actions>
+                </md-card>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
     import Navbar from "../Navbar";
     import {mapState} from 'vuex';
-    import {validationMixin} from 'vuelidate'
-    import {
-        required,
-        email,
-        minLength,
-        maxLength
-    } from 'vuelidate/lib/validators'
-
 
     export default {
         name: "My_orders",
@@ -139,76 +153,81 @@
             orders: [],
 
             form: {
-                firstName: null,
-                lastName: null,
-                gender: null,
-                age: 500,
-                email: null,
-                price: 0
+                content_type: 'article',
+                content_language: 'en',
+                current_domain_url: '',
+                content_length: 500,
+                topic_suggestions: '',
+                intended_result: '',
+                target_customer: '',
+                suggested_keywords: '',
+                specific_request: '',
+                competitors: ''
             },
-            userSaved: false,
             sending: false,
-            lastUser: null
         }),
         methods: {
-            getValidationClass(fieldName) {
+            get_orders() {
+                this.$api.post("/article/get", {
+                    email: this.user.email,
+                }).then((data) => {
+                    if (data.data.result === 'success') {
+                        this.orders = data.data.data;
+                    } else {
+                        this.$snotify.error(data.data.msg)
+                    }
+                }).catch(e => {
+                    this.$snotify.error(`Error status ${e.response.status}`);
+                });
+            },
+            clear_form() {
+                this.form = {
+                    content_type: 'article',
+                    content_language: 'en',
+                    current_domain_url: '',
+                    content_length: 500,
+                    topic_suggestions: '',
+                    intended_result: '',
+                    target_customer: '',
+                    suggested_keywords: '',
+                    specific_request: '',
+                    competitors: ''
+                }
+            },
+            create_brief() {
+                this.$api.post("/brief/create", {
+                    email: this.user.email,
+                    brief: this.form
+                }).then((data) => {
+                    if (data.data.result === 'success') {
+                        this.$snotify.info('Brief created!');
+                        this.show_form();
+                        this.get_orders();
+                    } else {
+                        this.$snotify.error(data.data.msg)
+                    }
+                }).catch(e => {
+                    this.$snotify.error(`Error status ${e.response.status}`);
+                });
 
             },
-            clearForm() {
-                this.form.firstName = null;
-                this.form.lastName = null;
-                this.form.age = null;
-                this.form.gender = null;
-                this.form.email = null
-            },
-            saveUser() {
-                this.sending = true
-
-                // todo api
-            },
-            validateUser() {
-
-            },
-            go_order(id) {
+            go_order(order) {
                 this.$router.push({
-                    path: 'order/' + id.toString()
-
+                    path: 'order/' + order.id,
                 })
             },
-            create_article() {
-
-            },
             show_form() {
+                this.clear_form();
                 this.form_show = !this.form_show;
                 this.text_form_show = this.form_show ? '-' : '+';
-            }
-        },
-        validations: {
-            form: {
-                firstName: {
-                    required,
-                    minLength: minLength(3)
-                },
-                lastName: {
-                    required,
-                    minLength: minLength(3)
-                },
-                age: {
-                    required,
-                    maxLength: maxLength(3)
-                },
-                gender: {
-                    required
-                },
-                email: {
-                    required,
-                    email
-                }
             }
         },
         computed: mapState([
             'user', 'login'
         ]),
+        created() {
+            this.get_orders();
+        }
     }
 </script>
 
