@@ -23,8 +23,10 @@ def title_create():
                   meta_description=title_data['meta_description'])
     article.status = 1
     article.titles.append(title)
+    user = User.query.get(article.user_id)
+    user.notifications.append(Notification(title='Title created!', text='Check new title in your orders!'))
     db.session.commit()
-    # todo send notification
+    send_email('Title created for you and waiting for confirmation!', user.email)
     return jsonify({'result': 'success'})
 
 

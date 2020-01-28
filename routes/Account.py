@@ -28,7 +28,7 @@ def account_registration():
         user = User(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
                     password_hash=generate_password_hash(data['password']), business_name=b_name,
                     confirm_status=code, token=uuid.uuid1())
-        send_email(str(code), data['email'])
+        send_email('Confirm password in Exeltive: \n' + str(code), data['email'])
         db.session.add(user)
         db.session.commit()
         return jsonify({'result': 'success', 'user': user.serialize, 'token': user.token})
@@ -67,7 +67,7 @@ def account_recovery():
     if user is None:
         return jsonify({'result': 'error', 'msg': 'invalid email'})
     tmp_pass = str(uuid.uuid1())
-    send_email(tmp_pass, data['email'])
+    send_email('It is your temporary password in Exeltive: \n'+tmp_pass, data['email'])
     user.password_hash = generate_password_hash(tmp_pass)
     db.session.commit()
     return jsonify({'result': 'success'})

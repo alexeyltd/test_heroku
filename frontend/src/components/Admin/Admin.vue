@@ -30,6 +30,7 @@
             </form>
         </div>
         <div v-else>
+            <md-button @click="login_user()">Refresh</md-button>
             <md-divider></md-divider>
             <div class="md-gutter md-layout md-alignment-center">
                 <md-button class="md-layout-item md-title" @click="show_part('db_show')">Database
@@ -37,7 +38,6 @@
             </div>
             <md-divider></md-divider>
             <div v-if='this.db_show'>
-                <md-button @click="login_user()">Refresh</md-button>
                 <json-viewer :value="users"
                              copyable
                              boxed
@@ -147,7 +147,23 @@
             <md-divider></md-divider>
 
             <div v-if='this.query_show' class="md-gutter md-layout md-alignment-top-left">
-                <div class="md-layout-item md-title">{{users_query}}</div>
+                <div v-for="item in users_query">
+                    <div class="md-layout-item md-small-size-100">
+                        <md-card>
+                            <md-card-header>
+                                <md-card-header-text>
+                                    <div class="md-title">In work</div>
+                                    <div class="md-subhead">{{item.author}}</div>
+                                    <div class="md-subhead">{{item.article_id}}</div>
+                                </md-card-header-text>
+                            </md-card-header>
+                            <md-card-content>
+                                <div v-if="item.status===1">Waiting for title approve</div>
+                                <div v-else>Waiting for article approve</div>
+                            </md-card-content>
+                        </md-card>
+                    </div>
+                </div>
             </div>
 
             <md-dialog :md-active.sync="show_dialog_flag">
@@ -158,7 +174,8 @@
                                  boxed
                                  sort>
                     </json-viewer>
-                    <div v-if="content_modal.try_number" class="md-title">It's {{content_modal.try_number}} try!</div>
+                    <div v-if="content_modal.try_number" class="md-title">It's {{content_modal.try_number}} try!
+                    </div>
                     <md-field>
                         <label>Title</label>
                         <md-input v-model="title_create_task.title"></md-input>
@@ -261,6 +278,9 @@
                                             this.tasks.articles.push(article)
                                         }
                                     } else if (article.status === 1 || article.status === 5) {
+                                        article.brief[0].status = article.status;
+                                        article.brief[0].author = user.email;
+                                        article.brief[0].article_id = article.id;
                                         this.users_query.push(article.brief[0])
                                     }
                                 })
@@ -340,22 +360,4 @@
 </script>
 
 <style scoped>
-    .badge {
-        width: 19px;
-        height: 19px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        background: red;
-        border-radius: 100%;
-        color: #fff;
-        font-size: 10px;
-        font-style: normal;
-        font-weight: 600;
-        letter-spacing: -.05em;
-        font-family: 'Roboto Mono', monospace;
-    }
 </style>

@@ -10,15 +10,14 @@ def generate_code(length):
     return code
 
 
-def send_email(input_message, email_to):
+def send_email(input_message, email_to=Config.gmail_user):
     gmail_user = Config.gmail_user
     gmail_pwd = Config.gmail_password
     smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
     smtpserver.ehlo()
     smtpserver.starttls()
     smtpserver.login(gmail_user, gmail_pwd)
-    header = 'To:' + email_to + '\n' + 'From: ' + gmail_user + '\n' + 'Confirm password in Exeltive \n'
-    input_message = input_message
+    header = 'To:' + email_to + '\n' + 'From: ' + gmail_user + '\n'
     msg = header + input_message
     smtpserver.sendmail(gmail_user, email_to, msg)
     smtpserver.close()

@@ -33,15 +33,16 @@ def article_approve_title():
     if article is None:
         return jsonify({'result': 'error', 'msg': 'invalid order id'})
 
-    # todo send notification
     if data['approve']:
         title = Title.query.get(data['title_id'])
         if title is None:
             return jsonify({'result': 'error', 'msg': 'invalid title id'})
         article.approve_title_id = data['title_id']
         article.status = 2
+        send_email('New article wait you for creating!')
     else:
         article.status = 0
+        send_email('Renew title wait you for creating!')
 
     article.update_date = datetime.utcnow()
 

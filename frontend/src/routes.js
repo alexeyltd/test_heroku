@@ -1,4 +1,3 @@
-import Index from "./components/Index.vue";
 import Login from './components/login/Login.vue';
 import Account from "./components/account/Account";
 import My_orders from "./components/account/My_orders";
@@ -11,7 +10,7 @@ import Admin from "./components/Admin/Admin";
 const routes = [
     {
         path: "/",
-        component: Index,
+        component: Products,
         name: "indexPage",
         meta: {}
     },

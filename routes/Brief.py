@@ -30,7 +30,7 @@ def brief_create():
     article.brief.append(brief)
     user.articles.append(article)
     db.session.commit()
-    # todo send notification
+    send_email('New brief wait you!')
     return jsonify({'result': 'success'})
 
 
