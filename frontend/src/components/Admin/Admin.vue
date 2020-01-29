@@ -105,7 +105,7 @@
                                 <div>{{title.content_length}} words, {{title.content_type}}</div>
                             </md-card-content>
                             <md-card-actions>
-                                <md-button @click="show_dialog(title)">Show task</md-button>
+                                <md-button @click="show_dialog_title(title)">Show task</md-button>
                             </md-card-actions>
                         </md-card>
                     </div>
@@ -131,7 +131,7 @@
                                 <div>{{article.brief.content_length}} words</div>
                             </md-card-content>
                             <md-card-actions>
-                                <md-button @click="show_dialog(title)">Show task</md-button>
+                                <md-button @click="show_dialog_article(article)">Show task</md-button>
                             </md-card-actions>
                         </md-card>
                     </div>
@@ -166,7 +166,7 @@
                 </div>
             </div>
 
-            <md-dialog :md-active.sync="show_dialog_flag">
+            <md-dialog :md-active.sync="show_dialog_flag_title">
                 <md-dialog-title>Title creation</md-dialog-title>
                 <md-dialog-content>
                     <json-viewer :value="content_modal"
@@ -190,9 +190,36 @@
                     </md-field>
                 </md-dialog-content>
                 <md-dialog-actions>
-                    <md-button class="md-primary" @click="show_dialog_flag=false">Close</md-button>
+                    <md-button class="md-primary" @click="show_dialog_flag_title=false">Close</md-button>
                     <md-button class="md-primary"
-                               @click="create_title(content_modal.id, content_modal.article_hash_id)">Confirm title
+                               @click="create_title(content_modal.article_hash_id)">Confirm title
+                    </md-button>
+                </md-dialog-actions>
+            </md-dialog>
+            <md-dialog :md-active.sync="show_dialog_flag_article">
+                <md-dialog-title>Article creation</md-dialog-title>
+                <md-dialog-content>
+                    <json-viewer :value="content_modal_article"
+                                 copyable
+                                 boxed
+                                 sort>
+                    </json-viewer>
+                    <div v-if="content_modal_article.try_number" class="md-title">It's
+                        {{content_modal_article.try_number}} try!
+                    </div>
+                    <md-field>
+                        <label>Img</label>
+                        <md-input v-model="article_create_task.img"></md-input>
+                    </md-field>
+                    <md-field>
+                        <label>Text</label>
+                        <md-textarea v-model="article_create_task.text"></md-textarea>
+                    </md-field>
+                </md-dialog-content>
+                <md-dialog-actions>
+                    <md-button class="md-primary" @click="show_dialog_flag_article=false">Close</md-button>
+                    <md-button class="md-primary" @click="create_article_content(content_modal_article.id)">Confirm
+                        article
                     </md-button>
                 </md-dialog-actions>
             </md-dialog>
@@ -223,8 +250,11 @@
             users_query: [],
             day_ms: 86400000,
 
-            show_dialog_flag: false,
+            show_dialog_flag_title: false,
             content_modal: {},
+
+            show_dialog_flag_article: false,
+            content_modal_article: {},
 
             instruments_show: false,
             tasks_show: false,
@@ -235,6 +265,10 @@
                 title: '',
                 meta_description: '',
                 keywords: ''
+            },
+            article_create_task: {
+                img: '',
+                text: ''
             }
         }),
         methods: {
@@ -262,6 +296,7 @@
                                         if (new Date(article.update_date).getTime() <= Date.now() + this.day_ms) {
                                             article.brief[0].article_hash_id = article.id;
                                             article.brief[0].try_number = article.titles.length + 1;
+                                            article.brief[0].user = user;
                                             this.tasks.titles.push(article.brief[0])
                                         }
                                     } else if (article.approve_title_id !== null && article.status === 2) {
@@ -323,30 +358,63 @@
                     this.$snotify.warning('Fill fields please')
                 }
             },
-            create_title(brief_id, article_id) {
+            create_title(article_id) {
                 if (this.title_create_task.title && this.title_create_task.keywords && this.title_create_task.meta_description) {
                     this.$api.post("/title/create", {
-                        brief_id: brief_id,
                         article_id: article_id,
                         title: this.title_create_task
                     }).then((data) => {
                         if (data.data.result === 'success') {
                             this.$snotify.info('Success!');
-                            this.login_user()
+                            this.login_user();
+                            this.title_create_task = {
+                                title: '',
+                                meta_description: '',
+                                keywords: ''
+                            };
+                            this.show_dialog_flag_title = false;
                         } else {
                             this.$snotify.error(data.data.msg)
                         }
                     }).catch(e => {
                         this.$snotify.error(`Error status ${e.response.status}`);
                     });
-                    this.show_dialog_flag = false;
                 } else {
                     this.$snotify.warning('Feel all fields')
                 }
             },
-            show_dialog(task) {
-                this.show_dialog_flag = true;
+            create_article_content(article_id) {
+                if (this.article_create_task.text && this.article_create_task.img) {
+                    this.$api.post("/content/create", {
+                        article_id: article_id,
+                        content: this.article_create_task
+                    }).then((data) => {
+                        if (data.data.result === 'success') {
+                            this.$snotify.info('Success!');
+                            this.login_user();
+                            this.show_dialog_flag_article = false;
+                            this.article_create_task = {
+                                img: '',
+                                text: ''
+                            }
+                        } else {
+                            this.$snotify.error(data.data.msg)
+                        }
+                    }).catch(e => {
+                        this.$snotify.error(`Error status ${e.response.status}`);
+                    });
+                } else {
+                    this.$snotify.warning('Feel all fields')
+                }
+            },
+            show_dialog_title(task) {
+                this.show_dialog_flag_title = true;
                 this.content_modal = task
+            },
+            show_dialog_article(article) {
+                this.show_dialog_flag_article = true;
+                this.content_modal_article = article;
+                this.content_modal_article.try_number = article.contents.length + 1;
             },
             show_part(part) {
                 this[part] = !this[part];

@@ -19,7 +19,7 @@ db.session.commit()
 migrate = Migrate(app, db)
 
 # import routes from routes
-from routes import Account, Admin, Article, Brief, Notification, Title
+from routes import Account, Admin, Notification, Article
 
 
 # frontend index page

@@ -100,41 +100,50 @@
                 </md-card>
             </form>
         </div>
-        <div class="md-layout md-alignment-top-center">
-            <div v-for="order in orders">
-                <md-card>
-                    <md-card-header>
-                        <md-card-header-text>
-                            <div class="md-title">Article</div>
-                            <div class="md-subhead">{{order.id}}</div>
-                        </md-card-header-text>
-                    </md-card-header>
-                    <md-card-content>
-                        <div v-if="order.status===0 && order.approve_title_id===null">
-                            <div>Need to wait title {{order.titles.length+1}}</div>
-                        </div>
-                        <div v-else-if="order.status===1 && order.approve_title_id===null">
-                            <div v-if="order.titles.length<3">
-                                <div>Need to approve title {{order.titles.length}}</div>
-                                <div>{{order.titles[order.titles.length-1].title_text}}</div>
-                                <div>{{order.titles[order.titles.length-1].keywords}}</div>
-                                <div>{{order.titles[order.titles.length-1].meta_description}}</div>
+        <div v-if="orders.length>0">
+            <div class="md-layout md-alignment-top-center">
+                <div v-for="order in orders">
+                    <md-card>
+                        <md-card-header>
+                            <md-card-header-text>
+                                <div class="md-title">Article</div>
+                                <div class="md-subhead">{{order.id}}</div>
+                            </md-card-header-text>
+                        </md-card-header>
+                        <md-card-content>
+                            <div v-if="order.status<=1">
+                                <div v-if="order.status===0">
+                                    <div>Need to wait title {{order.titles.length+1}}</div>
+                                </div>
+                                <div v-else-if="order.status===1 && order.titles">
+                                    Need to approve new title!
+                                </div>
+                                <div v-else>
+                                    Need to choose title from 3 variants
+                                </div>
                             </div>
                             <div v-else>
-                                Need to choose title or delete brief.
+                                <div v-if="order.status>1 && order.status<5">Need to wait article
+                                    {{order.contents.length}}
+                                </div>
+                                <div v-else-if="order.status===5 && order.contents.length<3">Need to approve/reject
+                                    article
+                                    {{order.contents.length}}
+                                </div>
+                                <div v-else-if="order.status===5 && order.contents.length===3">
+                                    Need to choose content from 3 variants
+                                </div>
+                                <div v-else-if="order.status===6">Article already complete</div>
                             </div>
-                        </div>
-                        <!--todo choose article if 3 tries-->
-                        <div v-else-if="order.status>1 && order.status<5">Need to wait article {{order.status-1}}</div>
-                        <div v-else>Need to approve article</div>
-                    </md-card-content>
-                    <md-card-actions>
-                        <div class="md-layout md-alignment-top-center">
-                            {{order.price}}$
-                        </div>
-                        <md-button @click="go_order(order)">Go</md-button>
-                    </md-card-actions>
-                </md-card>
+                        </md-card-content>
+                        <md-card-actions>
+                            <div class="md-layout md-alignment-top-center">
+                                {{order.price}}$
+                            </div>
+                            <md-button @click="go_order(order)">Go</md-button>
+                        </md-card-actions>
+                    </md-card>
+                </div>
             </div>
         </div>
     </div>
@@ -202,7 +211,7 @@
                     if (data.data.result === 'success') {
                         this.$snotify.info('Brief created!');
                         this.show_form();
-                        this.get_orders();
+                        // this.get_orders();
                     } else {
                         this.$snotify.error(data.data.msg)
                     }

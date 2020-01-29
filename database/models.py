@@ -60,11 +60,12 @@ class Article(db.Model):
     article_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     hash_id = db.Column(db.String(120), index=True, unique=True, nullable=False)
+    price = db.Column(db.Float, unique=False, nullable=True, default=None)
     approve_title_id = db.Column(db.Integer, unique=True, nullable=True)
+    approve_content_id = db.Column(db.Integer, unique=True, nullable=True)
     status = db.Column(db.Integer, unique=False, nullable=False, default=0)
     # 0=need to create title, 1=need to approve title,
     # 2,3,4=need to create article, 5=need to approve article
-    price = db.Column(db.Float, unique=False, nullable=True, default=None)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     user = db.relationship('User', backref='articles')
@@ -80,8 +81,10 @@ class Article(db.Model):
             'update_date': self.update_date,
             'titles': [i.serialize for i in self.titles],
             'brief': [i.serialize for i in self.brief],
+            'contents': [i.serialize for i in self.contents],
             'price': self.price,
-            'approve_title_id': self.approve_title_id
+            'approve_title_id': self.approve_title_id,
+            'approve_content_id': self.approve_content_id
         }
 
 
@@ -146,6 +149,26 @@ class Brief(db.Model):
             'suggested_keywords': self.suggested_keywords,
             'specific_requests': self.specific_requests,
             'target_customer': self.target_customer
+        }
+
+
+class ArticleContent(db.Model):
+    content_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    text = db.Column(db.LargeBinary, nullable=False)
+    img = db.Column(db.String(120), nullable=False)
+
+    article_id = db.Column(db.Integer, db.ForeignKey('article.article_id'))
+    article = db.relationship('Article', backref='contents')
+    create_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.content_id,
+            'create_date': self.create_date,
+            'text': self.text.decode("utf-8"),
+            'img': self.img
         }
 
 

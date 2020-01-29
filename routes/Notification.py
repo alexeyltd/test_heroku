@@ -17,7 +17,6 @@ def notification_get():
 @app.route('/api/v1/notification/create', methods=['POST'])
 def notification_create():
     data = request.json
-    # todo auth check
     user = User.query.filter_by(email=data['email']).first()
     if user is None:
         return jsonify({'result': 'error', 'msg': 'Invalid email'})

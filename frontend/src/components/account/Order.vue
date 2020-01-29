@@ -1,45 +1,79 @@
 <template>
     <div class="md-layout md-alignment-top-center">
         <md-card>
-            <div v-if="order.status===0 && order.approve_title_id===null">
-                <md-card-header>
-                    <div class="md-title">Title in production...</div>
-                </md-card-header>
-                <md-card-content>
+            <div v-if="order.status<=1">
+                <div v-if="order.status===0">
                     <div>Need to wait title {{order.titles.length+1}}</div>
-                </md-card-content>
-            </div>
-            <div v-else-if="order.status===1 && order.approve_title_id===null">
-                <md-card-header>
-                    <div class="md-title">Title approve stage {{order.titles.length}}</div>
-                </md-card-header>
-                <md-card-content>
-                    <div class="md-layout">{{order.titles[order.titles.length-1].title_text}}
+                </div>
+                <div v-else-if="order.status===1 && order.titles.length<3">
+                    <md-card-header>
+                        <div class="md-title">Title approve stage {{order.titles.length}}</div>
+                    </md-card-header>
+                    <md-card-content>
+                        <div class="md-layout">{{order.titles[order.titles.length-1].title_text}}
+                        </div>
+                        <div>{{order.titles[order.titles.length-1].keywords}}</div>
+                        <div>{{order.titles[order.titles.length-1].meta_description}}</div>
+                    </md-card-content>
+                    <md-card-actions>
+                        <md-button @click="title_approve(false, null)">Reject</md-button>
+                        <md-button @click="title_approve(true, order.titles[order.titles.length-1].id)">Accept
+                        </md-button>
+                    </md-card-actions>
+                </div>
+                <div v-else>
+                    <div v-for="title in order.titles">
+                        <md-card-header>
+                            <div class="md-title">{{title.title_text}}</div>
+                        </md-card-header>
+                        <md-card-content>
+                            <div class="md-layout">
+                            </div>
+                            <div>{{title.keywords}}</div>
+                            <div>{{title.meta_description}}</div>
+                        </md-card-content>
+                        <md-card-actions>
+                            <md-button @click="title_approve(true, title.id)">Accept
+                            </md-button>
+                        </md-card-actions>
                     </div>
-                    <div>{{order.titles[order.titles.length-1].keywords}}</div>
-                    <div>{{order.titles[order.titles.length-1].meta_description}}</div>
-                </md-card-content>
-                <md-card-actions>
-                    <md-button @click="title_approve(false, null)">Reject</md-button>
-                    <md-button @click="title_approve(true, order.titles[order.titles.length-1].id)">Accept</md-button>
-                </md-card-actions>
+                </div>
             </div>
-            <div v-else-if="order.status===2 && order.approve_title_id===null">
-                <md-card-header>
-                    <div class="md-title">Title choice stage</div>
-                </md-card-header>
-                <md-card-content>
-                    <div>Need to choice from titles</div>
-                    <div>{{order.titles}}</div>
-                </md-card-content>
-                <md-card-actions>
-                    <md-button @click="title_approve(true, order.titles[0].id)">Choose 1</md-button>
-                    <md-button @click="title_approve(true, order.titles[1].id)">Choose 2</md-button>
-                    <md-button @click="title_approve(true, order.titles[2].id)">Choose 3</md-button>
-                </md-card-actions>
+            <div v-else>
+                <div v-if="order.status>1 && order.status<5">Need to wait article {{order.content.length}}
+                </div>
+                <div v-else-if="order.status===5 && order.contents.length<3">
+                    <md-card-header>
+                        <div class="md-title">Article approve stage {{order.contents.length}}</div>
+                    </md-card-header>
+                    <md-card-content>
+                        <div class="md-layout">{{order.contents[order.contents.length-1].text}}
+                        </div>
+                        <div>{{order.contents[order.contents.length-1].img}}</div>
+                    </md-card-content>
+                    <md-card-actions>
+                        <md-button @click="content_approve(false, null)">Reject</md-button>
+                        <md-button @click="content_approve(true, order.contents[order.contens.length-1].id)">Accept
+                        </md-button>
+                    </md-card-actions>
+                </div>
+                <div v-else-if="order.status===5 && order.contents.length===3">
+                    <div v-for="content in order.contents">
+                        <md-card-header>
+                            <div class="md-title">Content</div>
+                        </md-card-header>
+                        <md-card-content>
+                            <div>{{content.text}}</div>
+                            <div>{{content.img}}</div>
+                        </md-card-content>
+                        <md-card-actions>
+                            <md-button @click="content_approve(true, content.id)">Accept
+                            </md-button>
+                        </md-card-actions>
+                    </div>
+                </div>
+                <div v-else-if="order.status===6">Article already complete</div>
             </div>
-            <div v-else-if="order.status===2||order.status===3||order.status===4">Need to wait article</div>
-            <div v-else-if="order.status===5">Need to approve article</div>
         </md-card>
     </div>
 </template>
@@ -69,11 +103,28 @@
                 });
             },
             title_approve(approve, title_id) {
-                this.$api.post("/article/approve/title", {
+                this.$api.post("/article/title/approve", {
                     email: this.user.email,
                     approve: approve,
                     order_id: this.order.id,
                     title_id: title_id
+                }).then((data) => {
+                    if (data.data.result === 'success') {
+                        this.$snotify.info('Success');
+                        this.$router.push('/orders')
+                    } else {
+                        this.$snotify.error(data.data.msg)
+                    }
+                }).catch(e => {
+                    this.$snotify.error(`Error status ${e.response.status}`);
+                });
+            },
+            content_approve(approve, content_id) {
+                this.$api.post("/article/content/approve", {
+                    email: this.user.email,
+                    approve: approve,
+                    order_id: this.order.id,
+                    content_id: content_id
                 }).then((data) => {
                     if (data.data.result === 'success') {
                         this.$snotify.info('Success');
