@@ -124,11 +124,11 @@
                             </div>
                             <div v-else>
                                 <div v-if="order.status>1 && order.status<5">Need to wait article
-                                    {{order.contents.length}}
+                                    {{order.contents.length+1}}
                                 </div>
                                 <div v-else-if="order.status===5 && order.contents.length<3">Need to approve/reject
                                     article
-                                    {{order.contents.length}}
+                                    {{order.contents.length+1}}
                                 </div>
                                 <div v-else-if="order.status===5 && order.contents.length===3">
                                     Need to choose content from 3 variants

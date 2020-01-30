@@ -16,7 +16,7 @@
                         <div>{{order.titles[order.titles.length-1].meta_description}}</div>
                     </md-card-content>
                     <md-card-actions>
-                        <md-button @click="title_approve(false, null)">Reject</md-button>
+                        <md-button @click="show_dialog_comment_flag=true">Reject</md-button>
                         <md-button @click="title_approve(true, order.titles[order.titles.length-1].id)">Accept
                         </md-button>
                     </md-card-actions>
@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-if="order.status>1 && order.status<5">Need to wait article {{order.content.length}}
+                <div v-if="order.status>1 && order.status<5">Need to wait article {{order.contents.length+1}}
                 </div>
                 <div v-else-if="order.status===5 && order.contents.length<3">
                     <md-card-header>
@@ -52,8 +52,8 @@
                         <div>{{order.contents[order.contents.length-1].img}}</div>
                     </md-card-content>
                     <md-card-actions>
-                        <md-button @click="content_approve(false, null)">Reject</md-button>
-                        <md-button @click="content_approve(true, order.contents[order.contens.length-1].id)">Accept
+                        <md-button @click="show_dialog_comment_flag=true">Reject</md-button>
+                        <md-button @click="content_approve(true, order.contents[order.contents.length-1].id)">Accept
                         </md-button>
                     </md-card-actions>
                 </div>
@@ -75,6 +75,24 @@
                 <div v-else-if="order.status===6">Article already complete</div>
             </div>
         </md-card>
+
+        <md-card v-if="show_dialog_comment_flag===true">
+            <md-card-header>Commentary</md-card-header>
+            <md-card-content>
+                <div class="md-card-header-text">Say us what's wrong!
+                </div>
+                <md-field>
+                    <label>Commentary</label>
+                    <md-textarea v-model="comment"></md-textarea>
+                </md-field>
+            </md-card-content>
+            <md-card-actions>
+                <md-button v-if="order.status===1" class="md-primary" @click="title_approve(false, null)">Continue
+                </md-button>
+                <md-button v-if="order.status===5" class="md-primary" @click="content_approve(false, null)">Continue
+                </md-button>
+            </md-card-actions>
+        </md-card>
     </div>
 </template>
 
@@ -86,6 +104,8 @@
         components: {Navbar},
         data: () => ({
             order: null,
+            comment: null,
+            show_dialog_comment_flag: false
         }),
         methods: {
             get_order(id) {
@@ -103,11 +123,15 @@
                 });
             },
             title_approve(approve, title_id) {
+                if (approve === false) {
+                    this.show_dialog_comment_flag = true
+                }
                 this.$api.post("/article/title/approve", {
                     email: this.user.email,
                     approve: approve,
                     order_id: this.order.id,
-                    title_id: title_id
+                    title_id: title_id,
+                    comment: this.comment
                 }).then((data) => {
                     if (data.data.result === 'success') {
                         this.$snotify.info('Success');
@@ -120,11 +144,15 @@
                 });
             },
             content_approve(approve, content_id) {
+                if (approve === false) {
+                    this.show_dialog_comment_flag = true
+                }
                 this.$api.post("/article/content/approve", {
                     email: this.user.email,
                     approve: approve,
                     order_id: this.order.id,
-                    content_id: content_id
+                    content_id: content_id,
+                    comment: this.comment
                 }).then((data) => {
                     if (data.data.result === 'success') {
                         this.$snotify.info('Success');

@@ -73,6 +73,8 @@ def title_approve():
         article.status = 2
         send_email('New article wait you for creating!')
     else:
+        if data['comment']:
+            article.comment = data['comment']
         article.status = 0
         send_email('Renew title wait you for creating!')
 
@@ -134,6 +136,8 @@ def content_approve():
                 break
         send_email('Article accepted!')
     else:
+        if data['comment']:
+            article.comment = data['comment']
         article.status = 2
         send_email('Need to recreate article!')
 

@@ -297,6 +297,7 @@
                                             article.brief[0].article_hash_id = article.id;
                                             article.brief[0].try_number = article.titles.length + 1;
                                             article.brief[0].user = user;
+                                            article.brief[0].comment = article.comment;
                                             this.tasks.titles.push(article.brief[0])
                                         }
                                     } else if (article.approve_title_id !== null && article.status === 2) {
@@ -360,6 +361,7 @@
             },
             create_title(article_id) {
                 if (this.title_create_task.title && this.title_create_task.keywords && this.title_create_task.meta_description) {
+                    this.show_dialog_flag_title = false;
                     this.$api.post("/title/create", {
                         article_id: article_id,
                         title: this.title_create_task
@@ -372,7 +374,6 @@
                                 meta_description: '',
                                 keywords: ''
                             };
-                            this.show_dialog_flag_title = false;
                         } else {
                             this.$snotify.error(data.data.msg)
                         }
@@ -385,6 +386,7 @@
             },
             create_article_content(article_id) {
                 if (this.article_create_task.text && this.article_create_task.img) {
+                    this.show_dialog_flag_article = false;
                     this.$api.post("/content/create", {
                         article_id: article_id,
                         content: this.article_create_task
@@ -392,7 +394,6 @@
                         if (data.data.result === 'success') {
                             this.$snotify.info('Success!');
                             this.login_user();
-                            this.show_dialog_flag_article = false;
                             this.article_create_task = {
                                 img: '',
                                 text: ''

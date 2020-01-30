@@ -66,6 +66,7 @@ class Article(db.Model):
     status = db.Column(db.Integer, unique=False, nullable=False, default=0)
     # 0=need to create title, 1=need to approve title,
     # 2,3,4=need to create article, 5=need to approve article
+    comment = db.Column(db.String(200), unique=False, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     user = db.relationship('User', backref='articles')
@@ -84,7 +85,8 @@ class Article(db.Model):
             'contents': [i.serialize for i in self.contents],
             'price': self.price,
             'approve_title_id': self.approve_title_id,
-            'approve_content_id': self.approve_content_id
+            'approve_content_id': self.approve_content_id,
+            'comment': self.comment
         }
 
 

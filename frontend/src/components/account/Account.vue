@@ -35,6 +35,25 @@
                         </md-toolbar>
                     </md-card-content>
                 </md-card>
+                <md-card>
+                    <md-card-header>
+                        <div class="md-title">Send message to your manager!
+                        </div>
+                    </md-card-header>
+                    <md-card-content>
+                        <div class="md-subheader">Say anything...
+                        </div>
+                        <md-field>
+                            <label>Message</label>
+                            <md-textarea v-model="message"></md-textarea>
+                        </md-field>
+                    </md-card-content>
+                    <md-card-actions>
+                        <md-button class="md-primary" @click="send_message()">
+                            Send
+                        </md-button>
+                    </md-card-actions>
+                </md-card>
             </div>
             <div v-if="this.user.confirm_status===0">
                 <div class="md-layout md-alignment-top-center">
@@ -112,9 +131,28 @@
             state: 'settings',
             code: null,
             notifications_new: [],
-            notifications_old: []
+            notifications_old: [],
+            message: null
         }),
         methods: {
+            send_message() {
+                if (this.message !== null) {
+                    this.$api.post("/admin/message/create", {
+                        email: this.user.email,
+                        message: this.message
+                    }).then((data) => {
+                        this.message = null;
+                        if (data.data.result === 'success') {
+                            this.$snotify.info('Complete!')
+                        } else {
+                            this.$snotify.error(data.data.msg)
+                        }
+                    }).catch(e => {
+                        this.$snotify.error(`Error status ${e.response.status}`);
+                    });
+                }
+            },
+
             change_state(state) {
                 if (state === 'notifications') {
                     this.get_notify();
