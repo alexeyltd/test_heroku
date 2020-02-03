@@ -65,7 +65,8 @@ class Article(db.Model):
     approve_content_id = db.Column(db.Integer, unique=True, nullable=True)
     status = db.Column(db.Integer, unique=False, nullable=False, default=0)
     # 0=need to create title, 1=need to approve title,
-    # 2,3,4=need to create article, 5=need to approve article
+    # 2,[3,4] need to create article, 5=need to approve article, 6=complete
+    # 3,4 now removed
     comment = db.Column(db.String(200), unique=False, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
@@ -94,7 +95,6 @@ class Title(db.Model):
     title_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     title_text = db.Column(db.String(120), unique=False, nullable=True)
-    try_number = db.Column(db.Integer, unique=False, nullable=False, default=0)  # todo delete
     keywords = db.Column(db.String(120), unique=False, nullable=True)
     meta_description = db.Column(db.String(120), unique=False, nullable=True)
 
@@ -110,7 +110,6 @@ class Title(db.Model):
             'title_text': self.title_text,
             'create_date': self.create_date,
             'update_date': self.update_date,
-            'try_number': self.try_number,
             'keywords': self.keywords,
             'meta_description': self.meta_description
         }

@@ -1,98 +1,131 @@
 <template>
-    <div class="md-layout md-alignment-top-center">
-        <md-card>
-            <div v-if="order.status<=1">
-                <div v-if="order.status===0">
-                    <div>Need to wait title {{order.titles.length+1}}</div>
-                </div>
-                <div v-else-if="order.status===1 && order.titles.length<3">
-                    <md-card-header>
-                        <div class="md-title">Title approve stage {{order.titles.length}}</div>
-                    </md-card-header>
-                    <md-card-content>
-                        <div class="md-layout">{{order.titles[order.titles.length-1].title_text}}
-                        </div>
-                        <div>{{order.titles[order.titles.length-1].keywords}}</div>
-                        <div>{{order.titles[order.titles.length-1].meta_description}}</div>
-                    </md-card-content>
-                    <md-card-actions>
-                        <md-button @click="show_dialog_comment_flag=true">Reject</md-button>
-                        <md-button @click="title_approve(true, order.titles[order.titles.length-1].id)">Accept
-                        </md-button>
-                    </md-card-actions>
-                </div>
-                <div v-else>
-                    <div v-for="title in order.titles">
-                        <md-card-header>
-                            <div class="md-title">{{title.title_text}}</div>
-                        </md-card-header>
-                        <md-card-content>
-                            <div class="md-layout">
-                            </div>
-                            <div>{{title.keywords}}</div>
-                            <div>{{title.meta_description}}</div>
-                        </md-card-content>
-                        <md-card-actions>
-                            <md-button @click="title_approve(true, title.id)">Accept
-                            </md-button>
-                        </md-card-actions>
+    <div v-if="order">
+        <div class="md-title">Stage now: {{totally_status}}</div>
+        <div class="md-subheader">Last update: {{order.update_date}}</div>
+        <div class="md-layout md-alignment-top-center">
+            <md-steppers :md-active-step.sync="active">
+                <md-step id="first" md-label="Order" md-description="Your brief info here" :md-editable="true"
+                         :md-done.sync="first">
+                    <div class="md-layout md-alignment-top-center">
+                        <div class="md-title">BRIEF</div>
                     </div>
-                </div>
-            </div>
-            <div v-else>
-                <div v-if="order.status>1 && order.status<5">Need to wait article {{order.contents.length+1}}
-                </div>
-                <div v-else-if="order.status===5 && order.contents.length<3">
-                    <md-card-header>
-                        <div class="md-title">Article approve stage {{order.contents.length}}</div>
-                    </md-card-header>
-                    <md-card-content>
-                        <div class="md-layout">{{order.contents[order.contents.length-1].text}}
-                        </div>
-                        <div>{{order.contents[order.contents.length-1].img}}</div>
-                    </md-card-content>
-                    <md-card-actions>
-                        <md-button @click="show_dialog_comment_flag=true">Reject</md-button>
-                        <md-button @click="content_approve(true, order.contents[order.contents.length-1].id)">Accept
-                        </md-button>
-                    </md-card-actions>
-                </div>
-                <div v-else-if="order.status===5 && order.contents.length===3">
-                    <div v-for="content in order.contents">
-                        <md-card-header>
-                            <div class="md-title">Content</div>
-                        </md-card-header>
-                        <md-card-content>
-                            <div>{{content.text}}</div>
-                            <div>{{content.img}}</div>
-                        </md-card-content>
-                        <md-card-actions>
-                            <md-button @click="content_approve(true, content.id)">Accept
-                            </md-button>
-                        </md-card-actions>
-                    </div>
-                </div>
-                <div v-else-if="order.status===6">Article already complete</div>
-            </div>
-        </md-card>
+                    <p>{{order.brief[0]}}</p>
+                </md-step>
 
-        <md-card v-if="show_dialog_comment_flag===true">
-            <md-card-header>Commentary</md-card-header>
-            <md-card-content>
-                <div class="md-card-header-text">Say us what's wrong!
-                </div>
-                <md-field>
-                    <label>Commentary</label>
-                    <md-textarea v-model="comment"></md-textarea>
-                </md-field>
-            </md-card-content>
-            <md-card-actions>
-                <md-button v-if="order.status===1" class="md-primary" @click="title_approve(false, null)">Continue
-                </md-button>
-                <md-button v-if="order.status===5" class="md-primary" @click="content_approve(false, null)">Continue
-                </md-button>
-            </md-card-actions>
-        </md-card>
+                <md-step id="second" md-label="History" md-description="History of order and selection"
+                         :md-editable="true"
+                         :md-done.sync="second">
+                    <div class="md-layout md-alignment-top-center">
+                        <div class="md-title">HISTORY</div>
+                    </div>
+
+                    <div class="md-title">Titles</div>
+                    <p>{{order.titles}}</p>
+                </md-step>
+
+                <md-step id="third" md-label="Article" md-description="When article is ready"
+                         :md-editable="third_editable"
+                         :md-done.sync="third">
+                    <div class="md-layout md-alignment-top-center">
+                        <div class="md-title">ARTICLE</div>
+                    </div>
+                    <p>{{order.contents}}</p>
+                </md-step>
+            </md-steppers>
+            <!--<md-card>-->
+            <!--<div v-if="order.status<=1">-->
+            <!--<div v-if="order.status===0">-->
+            <!--<div>Need to wait title {{order.titles.length+1}}</div>-->
+            <!--</div>-->
+            <!--<div v-else-if="order.status===1 && order.titles.length<3">-->
+            <!--<md-card-header>-->
+            <!--<div class="md-title">Title approve stage {{order.titles.length}}</div>-->
+            <!--</md-card-header>-->
+            <!--<md-card-content>-->
+            <!--<div class="md-layout">{{order.titles[order.titles.length-1].title_text}}-->
+            <!--</div>-->
+            <!--<div>{{order.titles[order.titles.length-1].keywords}}</div>-->
+            <!--<div>{{order.titles[order.titles.length-1].meta_description}}</div>-->
+            <!--</md-card-content>-->
+            <!--<md-card-actions>-->
+            <!--<md-button @click="show_dialog_comment_flag=true">Reject</md-button>-->
+            <!--<md-button @click="title_approve(true, order.titles[order.titles.length-1].id)">Accept-->
+            <!--</md-button>-->
+            <!--</md-card-actions>-->
+            <!--</div>-->
+            <!--<div v-else>-->
+            <!--<div v-for="title in order.titles">-->
+            <!--<md-card-header>-->
+            <!--<div class="md-title">{{title.title_text}}</div>-->
+            <!--</md-card-header>-->
+            <!--<md-card-content>-->
+            <!--<div class="md-layout">-->
+            <!--</div>-->
+            <!--<div>{{title.keywords}}</div>-->
+            <!--<div>{{title.meta_description}}</div>-->
+            <!--</md-card-content>-->
+            <!--<md-card-actions>-->
+            <!--<md-button @click="title_approve(true, title.id)">Accept-->
+            <!--</md-button>-->
+            <!--</md-card-actions>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div v-else>-->
+            <!--<div v-if="order.status>1 && order.status<5">Need to wait article {{order.contents.length+1}}-->
+            <!--</div>-->
+            <!--<div v-else-if="order.status===5 && order.contents.length<3">-->
+            <!--<md-card-header>-->
+            <!--<div class="md-title">Article approve stage {{order.contents.length}}</div>-->
+            <!--</md-card-header>-->
+            <!--<md-card-content>-->
+            <!--<div class="md-layout">{{order.contents[order.contents.length-1].text}}-->
+            <!--</div>-->
+            <!--<div>{{order.contents[order.contents.length-1].img}}</div>-->
+            <!--</md-card-content>-->
+            <!--<md-card-actions>-->
+            <!--<md-button @click="show_dialog_comment_flag=true">Reject</md-button>-->
+            <!--<md-button @click="content_approve(true, order.contents[order.contents.length-1].id)">Accept-->
+            <!--</md-button>-->
+            <!--</md-card-actions>-->
+            <!--</div>-->
+            <!--<div v-else-if="order.status===5 && order.contents.length===3">-->
+            <!--<div v-for="content in order.contents">-->
+            <!--<md-card-header>-->
+            <!--<div class="md-title">Content</div>-->
+            <!--</md-card-header>-->
+            <!--<md-card-content>-->
+            <!--<div>{{content.text}}</div>-->
+            <!--<div>{{content.img}}</div>-->
+            <!--</md-card-content>-->
+            <!--<md-card-actions>-->
+            <!--<md-button @click="content_approve(true, content.id)">Accept-->
+            <!--</md-button>-->
+            <!--</md-card-actions>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div v-else-if="order.status===6">Article already complete</div>-->
+            <!--</div>-->
+            <!--</md-card>-->
+
+            <md-card v-if="show_dialog_comment_flag===true">
+                <md-card-header>Commentary</md-card-header>
+                <md-card-content>
+                    <div class="md-card-header-text">Say us what's wrong!
+                    </div>
+                    <md-field>
+                        <label>Commentary</label>
+                        <md-textarea v-model="comment"></md-textarea>
+                    </md-field>
+                </md-card-content>
+                <md-card-actions>
+                    <md-button v-if="order.status===1" class="md-primary" @click="title_approve(false, null)">Continue
+                    </md-button>
+                    <md-button v-if="order.status===5" class="md-primary" @click="content_approve(false, null)">Continue
+                    </md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
     </div>
 </template>
 
@@ -105,7 +138,15 @@
         data: () => ({
             order: null,
             comment: null,
-            show_dialog_comment_flag: false
+            show_dialog_comment_flag: false,
+            totally_status: '',
+
+            active: 'second',
+            first: true,
+            second: true,
+            second_editable: false,
+            third: false,
+            third_editable: false
         }),
         methods: {
             get_order(id) {
@@ -115,6 +156,24 @@
                 }).then((data) => {
                     if (data.data.result === 'success') {
                         this.order = data.data.data;
+
+                        if (this.order.status === 0) {
+                            this.totally_status = this.order.titles.length + 1 + ' title creation.'
+                        } else if (this.order.status === 1) {
+                            this.totally_status = 'Need to choose title.'
+                        } else if (this.order.status === 2) {
+                            this.totally_status = 'Article creation.'
+                        } else if (this.order.status === 5) {
+                            this.totally_status = 'Need to approve/dis article.'
+                        } else if (this.order.status === 6) {
+                            this.totally_status = 'Article already complete!'
+                        }
+
+                        if (this.order.status > 1) {
+                            this.third = true;
+                            this.third_editable = true;
+                            this.active = 'third'
+                        }
                     } else {
                         this.$snotify.error(data.data.msg)
                     }

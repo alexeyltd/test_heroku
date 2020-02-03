@@ -102,48 +102,30 @@
         </div>
         <div v-if="orders.length>0">
             <div class="md-layout md-alignment-top-center">
-                <div v-for="order in orders">
-                    <md-card>
-                        <md-card-header>
-                            <md-card-header-text>
-                                <div class="md-title">Article</div>
-                                <div class="md-subhead">{{order.id}}</div>
-                            </md-card-header-text>
-                        </md-card-header>
-                        <md-card-content>
-                            <div v-if="order.status<=1">
-                                <div v-if="order.status===0">
-                                    <div>Need to wait title {{order.titles.length+1}}</div>
-                                </div>
-                                <div v-else-if="order.status===1 && order.titles">
-                                    Need to approve new title!
-                                </div>
-                                <div v-else>
-                                    Need to choose title from 3 variants
-                                </div>
-                            </div>
-                            <div v-else>
-                                <div v-if="order.status>1 && order.status<5">Need to wait article
-                                    {{order.contents.length+1}}
-                                </div>
-                                <div v-else-if="order.status===5 && order.contents.length<3">Need to approve/reject
-                                    article
-                                    {{order.contents.length+1}}
-                                </div>
-                                <div v-else-if="order.status===5 && order.contents.length===3">
-                                    Need to choose content from 3 variants
-                                </div>
-                                <div v-else-if="order.status===6">Article already complete</div>
-                            </div>
-                        </md-card-content>
-                        <md-card-actions>
-                            <div class="md-layout md-alignment-top-center">
-                                {{order.price}}$
-                            </div>
-                            <md-button @click="go_order(order)">Go</md-button>
-                        </md-card-actions>
-                    </md-card>
-                </div>
+                <md-table v-model="orders" md-sort="domain" md-sort-order="asc" md-card>
+                    <md-table-toolbar>
+                        <h1 class="md-title">Your orders</h1>
+                    </md-table-toolbar>
+
+                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-cell md-label="Brief" md-sort-by="brief">{{ item.id.slice(0,8)}}
+                        </md-table-cell>
+                        <md-table-cell md-label="Domain" md-sort-by="domain">{{ item.brief[0].current_domain_url }}
+                        </md-table-cell>
+                        <md-table-cell md-label="Words" md-sort-by="price">{{item.brief[0].content_length}} words
+                        </md-table-cell>
+                        <md-table-cell md-label="Status" md-sort-by="status">
+                            {{status_table[item.status]}}
+                        </md-table-cell>
+                        <md-table-cell md-label="Create date" md-sort-by="create_date">{{ item.create_date }}
+                        </md-table-cell>
+                        <md-table-cell md-label="Last update" md-sort-by="update_date">{{ item.update_date }}
+                        </md-table-cell>
+                        <md-table-cell md-label="" md-sort-by="title3">
+                            <md-button @click="go_order(item)">More</md-button>
+                        </md-table-cell>
+                    </md-table-row>
+                </md-table>
             </div>
         </div>
     </div>
@@ -160,7 +142,13 @@
             form_show: false,
             text_form_show: '+',
             orders: [],
-
+            status_table: {
+                0: 'Title creation',
+                1: 'Title approve',
+                2: 'Article creation',
+                5: 'Article approve',
+                6: 'Complete'
+            },
             form: {
                 content_type: 'article',
                 content_language: 'en',
@@ -211,7 +199,7 @@
                     if (data.data.result === 'success') {
                         this.$snotify.info('Brief created!');
                         this.show_form();
-                        // this.get_orders();
+                        this.get_orders();
                     } else {
                         this.$snotify.error(data.data.msg)
                     }

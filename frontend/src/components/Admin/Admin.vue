@@ -88,7 +88,7 @@
             <md-divider></md-divider>
 
             <div v-if='this.tasks_show' class="md-gutter md-layout md-alignment-top-left">
-                <div v-for="title in tasks.titles">
+                <div v-bind:key="title" v-for="title in tasks.titles">
                     <div class="md-layout-item md-small-size-100">
                         <md-card>
                             <md-card-header>
@@ -111,7 +111,7 @@
                     </div>
                 </div>
 
-                <div v-for="article in tasks.articles">
+                <div v-bind:key="article" v-for="article in tasks.articles">
                     <div class="md-layout-item md-small-size-100">
                         <md-card>
                             <md-card-header>
@@ -147,7 +147,7 @@
             <md-divider></md-divider>
 
             <div v-if='this.query_show' class="md-gutter md-layout md-alignment-top-left">
-                <div v-for="item in users_query">
+                <div v-bind:key="item" v-for="item in users_query">
                     <div class="md-layout-item md-small-size-100">
                         <md-card>
                             <md-card-header>
