@@ -96,7 +96,7 @@ class Title(db.Model):
 
     title_text = db.Column(db.String(120), unique=False, nullable=True)
     keywords = db.Column(db.String(120), unique=False, nullable=True)
-    meta_description = db.Column(db.String(120), unique=False, nullable=True)
+    meta_description = db.Column(db.String(250), unique=False, nullable=True)
 
     article_id = db.Column(db.Integer, db.ForeignKey('article.article_id'))
     article = db.relationship('Article', backref='titles')

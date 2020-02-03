@@ -3,7 +3,10 @@
         <div v-if="this.user.confirm_status===1">
             <div v-if="orders.length===0">
                 <div class="md-layout md-alignment-top-center">
-                    <div class="md-title">No orders here...</div>
+                    <md-empty-state
+                            md-label="Create your first brief"
+                            md-description="Creating brief.">
+                    </md-empty-state>
                 </div>
             </div>
             <div class="md-layout md-alignment-bottom-center">
@@ -118,8 +121,6 @@
                             {{status_table[item.status]}}
                         </md-table-cell>
                         <md-table-cell md-label="Create date" md-sort-by="create_date">{{ item.create_date }}
-                        </md-table-cell>
-                        <md-table-cell md-label="Last update" md-sort-by="update_date">{{ item.update_date }}
                         </md-table-cell>
                         <md-table-cell md-label="" md-sort-by="title3">
                             <md-button @click="go_order(item)">More</md-button>

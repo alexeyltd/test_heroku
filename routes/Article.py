@@ -36,7 +36,7 @@ def title_create():
     if article is None:
         return jsonify({'result': 'error', 'msg': 'article is invalid!'})
 
-    if len(article.titles) == 3:
+    if len(article.titles) >= 3:
         return jsonify({'result': 'error', 'msg': 'max number of titles exists'})
 
     title_data = data['title']
@@ -73,6 +73,8 @@ def title_approve():
         article.status = 2
         send_email('New article wait you for creating!')
     else:
+        if len(article.titles) >= 3:
+            return jsonify({'result': 'error', 'msg': 'max number of titles exists'})
         if data['comment']:
             article.comment = data['comment']
         article.status = 0
@@ -93,7 +95,7 @@ def content_create():
     if article is None:
         return jsonify({'result': 'error', 'msg': 'invalid article id'})
 
-    if len(article.contents) == 3:
+    if len(article.contents) >= 3:
         return jsonify({'result': 'error', 'msg': 'max number of contents exists'})
 
     content = data['content']
@@ -136,6 +138,8 @@ def content_approve():
                 break
         send_email('Article accepted!')
     else:
+        if len(article.contents) >= 3:
+            return jsonify({'result': 'error', 'msg': 'max number of contents exists'})
         if data['comment']:
             article.comment = data['comment']
         article.status = 2
