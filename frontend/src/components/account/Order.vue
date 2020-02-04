@@ -189,7 +189,6 @@
                         </md-card-content>
                     </md-card>
                 </div>
-
             </md-step>
         </md-steppers>
 
