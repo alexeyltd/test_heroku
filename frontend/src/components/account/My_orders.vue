@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="md-layout md-alignment-bottom-center">
-                <md-button class="md-fab md-primary" @click="this.form_show= true">
+                <md-button class="md-fab md-primary" @click="form_show=true">
                     <md-icon>{{text_form_show}}</md-icon>
                 </md-button>
             </div>
