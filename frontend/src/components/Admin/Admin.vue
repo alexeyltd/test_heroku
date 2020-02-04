@@ -209,9 +209,12 @@
                     </div>
                     <md-field>
                         <label>Img</label>
-                        <md-input v-model="article_create_task.img"></md-input>
+                        <md-file @md-change="onFileUpload($event)"
+                                 accept="image/*"/>
                     </md-field>
-                    <md-card><div v-html="compiledMarkdown"></div></md-card>
+                    <md-card>
+                        <div v-html="article_create_task.text"></div>
+                    </md-card>
                     <textarea class="md-textarea" :value="article_create_task.text" @input="update"></textarea>
                 </md-dialog-content>
                 <md-dialog-actions>
@@ -226,7 +229,6 @@
 </template>
 
 <script>
-    import marked from 'marked';
     import _ from 'lodash';
 
 
@@ -269,11 +271,14 @@
                 keywords: ''
             },
             article_create_task: {
-                img: '',
+                img: null,
                 text: ''
             }
         }),
         methods: {
+            onFileUpload(evt) {
+                this.article_create_task.img = evt[0]
+            },
             login_user() {
                 // todo delete
                 this.email = 'admin';
@@ -389,10 +394,11 @@
             create_article_content(article_id) {
                 if (this.article_create_task.text && this.article_create_task.img) {
                     this.show_dialog_flag_article = false;
-                    this.$api.post("/content/create", {
-                        article_id: article_id,
-                        content: this.article_create_task
-                    }).then((data) => {
+                    let formData = new FormData();
+                    formData.append('article_id', article_id);
+                    formData.append('text', this.article_create_task.text);
+                    formData.append('img', this.article_create_task.img);
+                    this.$api.post("/content/create", formData).then((data) => {
                         if (data.data.result === 'success') {
                             this.$snotify.info('Success!');
                             this.login_user();
@@ -429,11 +435,6 @@
         // todo delete
         created() {
             this.login_user();
-        },
-        computed: {
-            compiledMarkdown: function () {
-                return marked(this.article_create_task.text, {sanitize: true})
-            }
         },
     }
 </script>

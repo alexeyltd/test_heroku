@@ -93,13 +93,12 @@
                 </md-button>
             </md-dialog-actions>
         </md-dialog>
-        <div v-if="orders.length>0">
+        <div v-if="orders.length>0 && !load_state">
             <div class="md-layout md-alignment-top-center">
                 <md-table v-model="orders" md-sort="domain" md-sort-order="asc" md-card>
                     <md-table-toolbar>
                         <h1 class="md-title">Your orders</h1>
                     </md-table-toolbar>
-
                     <md-table-row slot="md-table-row" slot-scope="{ item }">
                         <md-table-cell md-label="Brief" md-sort-by="brief">{{ item.id.slice(0,8)}}
                         </md-table-cell>
@@ -120,16 +119,17 @@
                 </md-table>
             </div>
         </div>
+        <div class="md-layout md-alignment-top-center">
+            <md-progress-spinner v-if="load_state" md-mode="indeterminate"></md-progress-spinner>
+        </div>
     </div>
 </template>
 
 <script>
-    import Navbar from "../Navbar";
     import {mapState} from 'vuex';
 
     export default {
         name: "My_orders",
-        components: {Navbar},
         data: () => ({
             form_show: false,
             text_form_show: '+',
@@ -154,9 +154,11 @@
                 competitors: ''
             },
             sending: false,
+            load_state: false
         }),
         methods: {
             get_orders() {
+                this.load_state = true;
                 this.$api.post("/article/get", {
                     email: this.user.email,
                 }).then((data) => {
@@ -165,8 +167,11 @@
                     } else {
                         this.$snotify.error(data.data.msg)
                     }
+                    this.load_state = false;
                 }).catch(e => {
                     this.$snotify.error(`Error status ${e.response.status}`);
+                    this.load_state = false;
+
                 });
             },
             clear_form() {

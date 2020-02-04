@@ -2,6 +2,7 @@ from app import db
 import psycopg2
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from base64 import b64encode
 
 
 class User(db.Model):
@@ -49,6 +50,10 @@ class User(db.Model):
             'role_admin': self.role_admin
         }
 
+    @property
+    def serialize_articles_lite(self):
+        return [i.serialize for i in self.articles]
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -88,6 +93,19 @@ class Article(db.Model):
             'approve_title_id': self.approve_title_id,
             'approve_content_id': self.approve_content_id,
             'comment': self.comment
+        }
+
+    @property
+    def serialize_lite(self):
+        return {
+            'id': self.hash_id,
+            'status': self.status,
+            'create_date': self.create_date,
+            'update_date': self.update_date,
+            'brief': [{'content_length': self.brief[0].content_length,
+                       'current_domain_url': self.brief[0].current_domain_url}],
+            'approve_title_id': self.approve_title_id,
+            'approve_content_id': self.approve_content_id,
         }
 
 
@@ -157,7 +175,7 @@ class ArticleContent(db.Model):
     content_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     text = db.Column(db.LargeBinary, nullable=False)
-    img = db.Column(db.String(120), nullable=False)
+    img = db.Column(db.LargeBinary, nullable=False)
 
     article_id = db.Column(db.Integer, db.ForeignKey('article.article_id'))
     article = db.relationship('Article', backref='contents')
@@ -169,7 +187,7 @@ class ArticleContent(db.Model):
             'id': self.content_id,
             'create_date': self.create_date,
             'text': self.text.decode("utf-8"),
-            'img': self.img
+            'img': str(self.img)
         }
 
 

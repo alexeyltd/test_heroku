@@ -15,13 +15,12 @@ def article_get():
     if user is None:
         return jsonify({'result': 'error', 'msg': 'invalid email'})
 
-    # get all articles for user
+    # get all articles for user (lite)
     if 'id' not in data:
-        return jsonify({'result': 'success', 'data': user.serialize_full['articles']})
+        return jsonify({'result': 'success', 'data': user.serialize_articles_lite})
 
     # get article by hash_id for user
-    articles = user.articles
-    for article in articles:
+    for article in user.articles:
         if article.hash_id == data['id']:
             return jsonify({'result': 'success', 'data': article.serialize})
 
@@ -69,7 +68,8 @@ def title_approve():
         title = Title.query.get(data['title_id'])
         if title is None:
             return jsonify({'result': 'error', 'msg': 'invalid title id'})
-        article.approve_title_id = data['title_id']
+        article.approve_title_id = title.title_id
+        article.titles = [title]
         article.status = 2
         send_email('New article wait you for creating!')
     else:
@@ -90,7 +90,9 @@ def title_approve():
 # <editor-fold desc="ArticleContent">
 @app.route('/api/v1/content/create', methods=['POST'])
 def content_create():
-    data = request.json
+    data = request.form
+    img = request.files['img']
+
     article = Article.query.filter_by(hash_id=data['article_id']).first()
     if article is None:
         return jsonify({'result': 'error', 'msg': 'invalid article id'})
@@ -98,8 +100,8 @@ def content_create():
     if len(article.contents) >= 3:
         return jsonify({'result': 'error', 'msg': 'max number of contents exists'})
 
-    content = data['content']
-    content = ArticleContent(text=bytes(content['text'], 'ascii'), img=content['img'])
+    content = ArticleContent(text=bytearray(data['text'], encoding='utf-8'),
+                             img=img.read())
     article.contents.append(content)
     if len(article.contents) == 3:
         article.status = 6
@@ -177,4 +179,17 @@ def brief_create():
     db.session.commit()
     send_email('New brief wait you!')
     return jsonify({'result': 'success'})
+
+
+# </editor-fold>
+
+# <editor-fold desc="Image">
+@app.route('/api/v1/img/get/<string:article_id>', methods=['GET'])
+def img_get(article_id):
+    article = Article.query.filter_by(hash_id=article_id).first()
+    if article is None:
+        return jsonify({'result': 'error', 'msg': 'invalid order id'})
+
+    content = article.contents[0].img
+    return app.response_class(content, mimetype='application/octet-stream')
 # </editor-fold>

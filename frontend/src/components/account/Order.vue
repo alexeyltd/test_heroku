@@ -25,6 +25,17 @@
 
                         <md-list-item>
                             <div class="md-list-item-text">
+                                <span>{{order.id.slice(0,8)}}</span>
+                                <span>Id</span>
+                            </div>
+                            <div class="md-list-item-text">
+                                <span>{{(new Date(order.brief[0].create_date)).toLocaleDateString('en-GB')}}</span>
+                                <span>Created</span>
+                            </div>
+                        </md-list-item>
+                        <md-divider></md-divider>
+                        <md-list-item>
+                            <div class="md-list-item-text">
                                 <span>{{order.brief[0].content_type.toUpperCase()}}</span>
                                 <span>Type</span>
                             </div>
@@ -39,13 +50,6 @@
                             <div class="md-list-item-text">
                                 <span>{{order.price}}$</span>
                                 <span>Cost</span>
-                            </div>
-                        </md-list-item>
-                        <md-divider></md-divider>
-                        <md-list-item>
-                            <div class="md-list-item-text">
-                                <span>{{(new Date(order.brief[0].create_date)).toLocaleDateString('en-GB')}}</span>
-                                <span>Created</span>
                             </div>
                         </md-list-item>
                         <md-divider></md-divider>
@@ -109,7 +113,8 @@
                     <div class="md-title">TITLES</div>
                 </div>
                 <div v-bind:key="title" v-for="title in order.titles">
-                    <md-card v-if="title.id===order.approve_title_id" md-with-hover v-bind:class="{ 'md-primary': title.id===order.approve_title_id }">
+                    <md-card md-with-hover
+                             v-bind:class="{ 'md-primary': title.id===order.approve_title_id }">
                         <md-ripple>
                             <md-card-header>
                                 <div class="md-title">{{title.title_text}}</div>
@@ -181,10 +186,10 @@
                         <md-card-header class="md-title md-layout md-alignment-top-center">
                             {{order.titles[0].title_text}}
                         </md-card-header>
-                        <md-card-media><img :src="order.contents[order.contents.length-1].img" alt="Image">
+                        <md-card-media><img :src="'/api/v1/img/get/'+order.id" alt="Image">
                         </md-card-media>
                         <md-card-content>
-                            <div v-html="markdown_text(order.contents[order.contents.length-1].text)">
+                            <div v-html="order.contents[order.contents.length-1].text">
                             </div>
                         </md-card-content>
                     </md-card>
@@ -213,8 +218,6 @@
 </template>
 
 <script>
-    import marked from 'marked';
-
     export default {
         name: 'Order',
         data: () => ({
@@ -285,6 +288,7 @@
                 });
             },
             title_approve(approve, title_id) {
+                this.show_dialog_comment_flag = false;
                 this.$api.post("/article/title/approve", {
                     email: this.user.email,
                     approve: approve,
@@ -303,6 +307,8 @@
                 });
             },
             content_approve(approve, content_id) {
+                this.show_dialog_comment_flag = false;
+
                 this.$api.post("/article/content/approve", {
                     email: this.user.email,
                     approve: approve,
@@ -320,9 +326,6 @@
                     this.$snotify.error(`Error status ${e.response.status}`);
                 });
             },
-            markdown_text(text) {
-                return marked(text, {sanitize: true})
-            }
         },
         created() {
             this.user = this.$store.state.user;
