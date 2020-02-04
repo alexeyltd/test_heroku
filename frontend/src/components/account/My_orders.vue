@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <div v-if="this.user.confirm_status===1">
             <div v-if="orders.length===0">
                 <div class="md-layout md-alignment-top-center">
@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="md-layout md-alignment-bottom-center">
-                <md-button class="md-fab md-primary" @click="show_form()">
+                <md-button class="md-fab md-primary" @click="this.form_show= true">
                     <md-icon>{{text_form_show}}</md-icon>
                 </md-button>
             </div>
@@ -23,7 +23,6 @@
 
         <md-dialog :md-active.sync="form_show">
             <md-dialog-content>
-
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item md-small-size-100">
                         <md-field>
@@ -185,7 +184,7 @@
                 }
             },
             create_brief() {
-                this.show_form();
+                this.form_show = false;
                 this.$api.post("/brief/create", {
                     email: this.user.email,
                     brief: this.form
@@ -199,17 +198,13 @@
                 }).catch(e => {
                     this.$snotify.error(`Error status ${e.response.status}`);
                 });
-
+                this.clear_form();
             },
             go_order(order) {
                 this.$router.push({
                     path: 'order/' + order.id,
                 })
             },
-            show_form() {
-                this.clear_form();
-                this.form_show = !this.form_show;
-            }
         },
         computed: mapState([
             'user', 'login'

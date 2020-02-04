@@ -109,7 +109,7 @@
                     <div class="md-title">TITLES</div>
                 </div>
                 <div v-bind:key="title" v-for="title in order.titles">
-                    <md-card md-with-hover v-bind:class="{ 'md-primary': title.id===order.approve_title_id }">
+                    <md-card v-if="title.id===order.approve_title_id" md-with-hover v-bind:class="{ 'md-primary': title.id===order.approve_title_id }">
                         <md-ripple>
                             <md-card-header>
                                 <div class="md-title">{{title.title_text}}</div>
@@ -151,7 +151,7 @@
                 <div class="md-layout md-alignment-top-center">
                     <div class="md-title">ARTICLE</div>
                 </div>
-                <div v-if="order.contents.length===0 && order.status>1" class="md-layout md-alignment-top-center">
+                <div v-if="order.status===2" class="md-layout md-alignment-top-center">
                     <md-empty-state
                             md-label="Article creation..."
                             :md-description="'Your article is in production: '+ this.status_time+' hours remaining.' ">
@@ -177,7 +177,7 @@
                         <md-button class="md-primary" :md-ripple="false">Download archive with article (html, txt, img)
                         </md-button>
                     </div>
-                    <md-card>
+                    <md-card v-if="order.status!==2">
                         <md-card-header class="md-title md-layout md-alignment-top-center">
                             {{order.titles[0].title_text}}
                         </md-card-header>

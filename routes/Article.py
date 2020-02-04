@@ -99,13 +99,18 @@ def content_create():
         return jsonify({'result': 'error', 'msg': 'max number of contents exists'})
 
     content = data['content']
-    article.contents.append(ArticleContent(text=bytes(content['text'], 'ascii'), img=content['img']))
-    article.status = 5
+    content = ArticleContent(text=bytes(content['text'], 'ascii'), img=content['img'])
+    article.contents.append(content)
+    if len(article.contents) == 3:
+        article.status = 6
+        article.approve_content_id = content.content_id
+    else:
+        article.status = 5
     article.update_date = datetime.utcnow()
 
     user = User.query.get(article.user_id)
-    user.notifications.append(Notification(title='Title created!', text='Check new article in your orders!'))
-    send_email('Content created for your article and waiting for confirmation!', user.email)
+    user.notifications.append(Notification(title='Content created!', text='Check new article in your orders!'))
+    send_email('Content created for your article and waiting for you!', user.email)
 
     db.session.commit()
     return jsonify({'result': 'success'})
