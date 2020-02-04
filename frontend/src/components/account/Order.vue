@@ -1,7 +1,18 @@
 <template>
     <div v-if="order">
-        <div class="md-title">Stage now: {{totally_status}}</div>
-        <div class="md-subheader">Last update: {{order.update_date}}</div>
+        <md-card>
+            <md-card-header>
+                <div class="md-layout md-alignment-top-center md-title">Stage now: {{totally_status}}
+                </div>
+                <div v-if="status_time>0" class="md-layout md-alignment-top-center md-subhead">Hours remaining:
+                    {{status_time}}
+                </div>
+            </md-card-header>
+            <md-card-content>
+                <md-progress-bar md-mode="buffer" :md-value="progress_count"
+                                 :md-buffer="progress_buffer"></md-progress-bar>
+            </md-card-content>
+        </md-card>
         <md-steppers class="md-layout md-alignment-top-center" :md-active-step.sync="active">
             <md-step id="first" md-label="Brief" md-description="Your order info here" :md-editable="true"
                      :md-done.sync="first">
@@ -14,35 +25,40 @@
 
                         <md-list-item>
                             <div class="md-list-item-text">
-                                <span class="md-title">{{order.brief[0].content_type.toUpperCase()}}</span>
+                                <span>{{order.brief[0].content_type.toUpperCase()}}</span>
                                 <span>Type</span>
                             </div>
                             <div class="md-list-item-text">
-                                <span class="md-title">{{array_lang[order.brief[0].content_language]}}</span>
+                                <span>{{array_lang[order.brief[0].content_language]}}</span>
                                 <span>Language</span>
                             </div>
                             <div class="md-list-item-text">
-                                <span class="md-title">{{order.brief[0].content_length}}</span>
+                                <span>{{order.brief[0].content_length}}</span>
                                 <span>Words</span>
                             </div>
                             <div class="md-list-item-text">
-                                <span class="md-title">{{order.price}}$</span>
+                                <span>{{order.price}}$</span>
                                 <span>Cost</span>
                             </div>
                         </md-list-item>
                         <md-divider></md-divider>
-
                         <md-list-item>
                             <div class="md-list-item-text">
-                                <span class="md-title">{{(new Date(order.brief[0].create_date)).toLocaleDateString('en-GB')}}</span>
+                                <span>{{(new Date(order.brief[0].create_date)).toLocaleDateString('en-GB')}}</span>
                                 <span>Created</span>
                             </div>
+                        </md-list-item>
+                        <md-divider></md-divider>
+                        <md-list-item>
                             <div class="md-list-item-text">
-                                <span class="md-title">{{order.brief[0].current_domain_url}}</span>
+                                <span>{{order.brief[0].current_domain_url}}</span>
                                 <span>Domain</span>
                             </div>
+                        </md-list-item>
+                        <md-divider></md-divider>
+                        <md-list-item>
                             <div class="md-list-item-text">
-                                <span class="md-title">{{order.brief[0].competitors}}</span>
+                                <span>{{order.brief[0].competitors}}</span>
                                 <span>Competitors</span>
                             </div>
                         </md-list-item>
@@ -52,6 +68,9 @@
                                 <span>{{order.brief[0].suggested_keywords}}</span>
                                 <span>Keywords</span>
                             </div>
+                        </md-list-item>
+                        <md-divider></md-divider>
+                        <md-list-item>
                             <div class="md-list-item-text">
                                 <span>{{order.brief[0].target_customer}}</span>
                                 <span>Target customer</span>
@@ -72,6 +91,7 @@
                             </div>
                         </md-list-item>
                         <md-divider></md-divider>
+
                         <md-list-item>
                             <div class="md-list-item-text">
                                 <span>{{order.brief[0].intended_result}}</span>
@@ -82,7 +102,7 @@
                 </md-card>
             </md-step>
 
-            <md-step id="second" md-label="Order" md-description="History of order"
+            <md-step id="second" md-label="Titles" md-description="Titles here"
                      :md-editable="true"
                      :md-done.sync="second">
                 <div class="md-layout md-alignment-top-center">
@@ -109,41 +129,73 @@
                         </md-ripple>
                     </md-card>
                 </div>
-                <div v-if="order.titles.length>0 && order.titles.length<3 && order.status!==0"
+                <div v-if="order.titles.length>0 && order.titles.length<3 && order.status===1"
                      class="md-layout md-alignment-top-center">
-                    <md-button v-if="order.approve_title_id===null" class="md-title"
+                    <md-button class="md-title"
                                @click="show_dialog_comment_flag=true">Request another (remember maximum 2 extra titles)
                     </md-button>
                 </div>
-                <div v-else>
+                <div v-else-if="order.status===0">
                     <div class="md-layout md-alignment-top-center">
                         <md-empty-state
                                 md-label="Title creation..."
-                                md-description="Your title is in production">
+                                :md-description="'Your title is in production: '+ this.status_time+' hours remaining.' ">
                         </md-empty-state>
                     </div>
                 </div>
             </md-step>
 
-            <md-step id="third" md-label="Article" md-description="When article is ready"
+            <md-step id="third" md-label="Article" md-description="Whole set for now"
                      :md-editable="third_editable"
                      :md-done.sync="third">
                 <div class="md-layout md-alignment-top-center">
                     <div class="md-title">ARTICLE</div>
                 </div>
-                <!--<p>{{order.contents}}</p>-->
-                <div v-if="order.contents.length===0" class="md-layout md-alignment-top-center">
+                <div v-if="order.contents.length===0 && order.status>1" class="md-layout md-alignment-top-center">
                     <md-empty-state
                             md-label="Article creation..."
-                            md-description="Your article is in production">
+                            :md-description="'Your article is in production: '+ this.status_time+' hours remaining.' ">
                     </md-empty-state>
                 </div>
+                <div v-else-if="order.status<2" class="md-layout md-alignment-top-center">
+                    <md-empty-state
+                            md-label="Before choose a title!"
+                            md-description="Need to approve title firstly">
+                    </md-empty-state>
+                </div>
+                <div v-else>
+                    <div v-if="order.status===5" class="md-layout md-alignment-top-center">
+                        <md-button class="md-primary" :md-ripple="false"
+                                   @click="content_approve(true, order.contents[order.contents.length-1].id)">Approve
+                            article
+                        </md-button>
+                        <md-button class="md-accent" :md-ripple="false"
+                                   @click="show_dialog_comment_flag=true">Reject article
+                        </md-button>
+                    </div>
+                    <div v-else class="md-layout md-alignment-top-center">
+                        <md-button class="md-primary" :md-ripple="false">Download archive with article (html, txt, img)
+                        </md-button>
+                    </div>
+                    <md-card>
+                        <md-card-header class="md-title md-layout md-alignment-top-center">
+                            {{order.titles[0].title_text}}
+                        </md-card-header>
+                        <md-card-media><img :src="order.contents[order.contents.length-1].img" alt="Image">
+                        </md-card-media>
+                        <md-card-content>
+                            <div v-html="markdown_text(order.contents[order.contents.length-1].text)">
+                            </div>
+                        </md-card-content>
+                    </md-card>
+                </div>
+
             </md-step>
         </md-steppers>
 
         <md-dialog :md-active.sync="show_dialog_comment_flag">
             <md-dialog-title>Preferences</md-dialog-title>
-            <md-dialog-content>
+            <md-dialog-content md-fullscreen>
                 <div class="md-subhead">Say us what's wrong!
                 </div>
                 <md-field>
@@ -152,7 +204,9 @@
                 </md-field>
             </md-dialog-content>
             <md-dialog-actions>
-                <md-button class="md-primary" @click="title_approve(false, null)">Continue
+                <md-button v-if="order.status===1" class="md-primary" @click="title_approve(false, null)">Continue
+                </md-button>
+                <md-button v-if="order.status===5" class="md-primary" @click="content_approve(false, null)">Continue
                 </md-button>
             </md-dialog-actions>
         </md-dialog>
@@ -160,6 +214,7 @@
 </template>
 
 <script>
+    import marked from 'marked';
 
     export default {
         name: 'Order',
@@ -168,6 +223,10 @@
             comment: null,
             show_dialog_comment_flag: false,
             totally_status: '',
+            progress_count: 20,
+            progress_buffer: 35,
+            status_time: 0,
+            day_ms: 86400000,
 
             active: 'second',
             first: true,
@@ -175,6 +234,7 @@
             second_editable: false,
             third: false,
             third_editable: false,
+            html_text: '',
 
             array_lang: {
                 'en': 'English'
@@ -190,15 +250,27 @@
                         this.order = data.data.data;
 
                         if (this.order.status === 0) {
-                            this.totally_status = this.order.titles.length + 1 + ' title creation.'
+                            this.totally_status = this.order.titles.length + 1 + ' title creation';
+                            this.progress_count = 15;
+                            this.progress_buffer = 35;
+                            this.status_time = Math.ceil((new Date(this.order.update_date).getTime() + this.day_ms - new Date()) / (1000 * 60 * 60)) - 1
                         } else if (this.order.status === 1) {
-                            this.totally_status = 'Need to choose title.'
+                            this.totally_status = 'Need to choose title';
+                            this.progress_count = 35;
+                            this.progress_buffer = 60;
                         } else if (this.order.status === 2) {
-                            this.totally_status = 'Article creation.'
+                            this.progress_count = 60;
+                            this.progress_buffer = 80;
+                            this.totally_status = 'Article creation';
+                            this.status_time = Math.ceil((new Date(this.order.update_date).getTime() + this.day_ms * 3 - new Date()) / (1000 * 60 * 60)) - 1
+
                         } else if (this.order.status === 5) {
-                            this.totally_status = 'Need to approve/dis article.'
+                            this.progress_count = 80;
+                            this.progress_buffer = 100;
+                            this.totally_status = 'Need to approve/dis article'
                         } else if (this.order.status === 6) {
-                            this.totally_status = 'Article already complete!'
+                            this.progress_count = 100;
+                            this.totally_status = 'Article already complete'
                         }
 
                         if (this.order.status > 1) {
@@ -231,32 +303,32 @@
                     this.$snotify.error(`Error status ${e.response.status}`);
                 });
             },
-            // content_approve(approve, content_id) {
-            //     if (approve === false) {
-            //         this.show_dialog_comment_flag = true
-            //     }
-            //     this.$api.post("/article/content/approve", {
-            //         email: this.user.email,
-            //         approve: approve,
-            //         order_id: this.order.id,
-            //         content_id: content_id,
-            //         comment: this.comment
-            //     }).then((data) => {
-            //         if (data.data.result === 'success') {
-            //             this.$snotify.info('Success');
-            //             this.$router.push('/orders')
-            //         } else {
-            //             this.$snotify.error(data.data.msg)
-            //         }
-            //     }).catch(e => {
-            //         this.$snotify.error(`Error status ${e.response.status}`);
-            //     });
-            // }
+            content_approve(approve, content_id) {
+                this.$api.post("/article/content/approve", {
+                    email: this.user.email,
+                    approve: approve,
+                    order_id: this.order.id,
+                    content_id: content_id,
+                    comment: this.comment
+                }).then((data) => {
+                    if (data.data.result === 'success') {
+                        this.$snotify.info('Success');
+                        this.get_order(this.$route.params.order_id)
+                    } else {
+                        this.$snotify.error(data.data.msg)
+                    }
+                }).catch(e => {
+                    this.$snotify.error(`Error status ${e.response.status}`);
+                });
+            },
+            markdown_text(text) {
+                return marked(text, {sanitize: true})
+            }
         },
         created() {
             this.user = this.$store.state.user;
             this.get_order(this.$route.params.order_id)
-        }
+        },
     }
 
 </script>

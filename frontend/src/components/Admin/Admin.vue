@@ -211,10 +211,8 @@
                         <label>Img</label>
                         <md-input v-model="article_create_task.img"></md-input>
                     </md-field>
-                    <md-field>
-                        <label>Text</label>
-                        <md-textarea v-model="article_create_task.text"></md-textarea>
-                    </md-field>
+                    <md-card><div v-html="compiledMarkdown"></div></md-card>
+                    <textarea class="md-textarea" :value="article_create_task.text" @input="update"></textarea>
                 </md-dialog-content>
                 <md-dialog-actions>
                     <md-button class="md-primary" @click="show_dialog_flag_article=false">Close</md-button>
@@ -228,6 +226,10 @@
 </template>
 
 <script>
+    import marked from 'marked';
+    import _ from 'lodash';
+
+
     export default {
         name: "Admin",
         data: () => ({
@@ -419,12 +421,20 @@
             },
             show_part(part) {
                 this[part] = !this[part];
-            }
+            },
+            update: _.debounce(function (e) {
+                this.article_create_task.text = e.target.value;
+            }, 300)
         },
         // todo delete
         created() {
             this.login_user();
-        }
+        },
+        computed: {
+            compiledMarkdown: function () {
+                return marked(this.article_create_task.text, {sanitize: true})
+            }
+        },
     }
 </script>
 
