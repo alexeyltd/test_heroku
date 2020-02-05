@@ -209,13 +209,19 @@
                     </div>
                     <md-field>
                         <label>Img</label>
-                        <md-file @md-change="onFileUpload($event)"
+                        <md-file @md-change="onImgUpload($event)"
                                  accept="image/*"/>
                     </md-field>
-                    <md-card>
-                        <div v-html="article_create_task.text"></div>
-                    </md-card>
-                    <textarea class="md-textarea" :value="article_create_task.text" @input="update"></textarea>
+                    <md-field>
+                        <label>Txt</label>
+                        <md-file @md-change="onTxtUpload($event)"
+                                 accept="text/plain"/>
+                    </md-field>
+                    <md-field>
+                        <label>Html</label>
+                        <md-file @md-change="onHtmlUpload($event)"
+                                 accept="text/html"/>
+                    </md-field>
                 </md-dialog-content>
                 <md-dialog-actions>
                     <md-button class="md-primary" @click="show_dialog_flag_article=false">Close</md-button>
@@ -272,12 +278,19 @@
             },
             article_create_task: {
                 img: null,
-                text: ''
+                txt: null,
+                html: null
             }
         }),
         methods: {
-            onFileUpload(evt) {
+            onImgUpload(evt) {
                 this.article_create_task.img = evt[0]
+            },
+            onTxtUpload(evt) {
+                this.article_create_task.txt = evt[0]
+            },
+            onHtmlUpload(evt) {
+                this.article_create_task.html = evt[0]
             },
             login_user() {
                 // todo delete
@@ -392,19 +405,21 @@
                 }
             },
             create_article_content(article_id) {
-                if (this.article_create_task.text && this.article_create_task.img) {
+                if (this.article_create_task.txt && this.article_create_task.img && this.article_create_task.html) {
                     this.show_dialog_flag_article = false;
                     let formData = new FormData();
                     formData.append('article_id', article_id);
-                    formData.append('text', this.article_create_task.text);
+                    formData.append('html', this.article_create_task.html);
+                    formData.append('txt', this.article_create_task.txt);
                     formData.append('img', this.article_create_task.img);
                     this.$api.post("/content/create", formData).then((data) => {
                         if (data.data.result === 'success') {
                             this.$snotify.info('Success!');
                             this.login_user();
                             this.article_create_task = {
-                                img: '',
-                                text: ''
+                                img: null,
+                                txt: null,
+                                html: null
                             }
                         } else {
                             this.$snotify.error(data.data.msg)

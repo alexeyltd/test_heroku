@@ -112,27 +112,29 @@
                 <div class="md-layout md-alignment-top-center">
                     <div class="md-title">TITLES</div>
                 </div>
-                <div v-bind:key="title" v-for="title in order.titles">
-                    <md-card md-with-hover
-                             v-bind:class="{ 'md-primary': title.id===order.approve_title_id }">
-                        <md-ripple>
-                            <md-card-header>
-                                <div class="md-title">{{title.title_text}}</div>
-                                <div class="md-subhead">{{title.keywords}}</div>
-                            </md-card-header>
-                            <md-card-content>
-                                {{title.meta_description}}
-                            </md-card-content>
-                            <md-card-actions>
-                                <div class="md-subhead">{{(new
-                                    Date(title.create_date)).toLocaleDateString('en-GB')}}
-                                </div>
-                                <md-button v-if="order.approve_title_id===null"
-                                           @click="title_approve(true, title.id)">Approve
-                                </md-button>
-                            </md-card-actions>
-                        </md-ripple>
-                    </md-card>
+                <div v-if="order.status!==0">
+                    <div v-bind:key="title" v-for="title in order.titles">
+                        <md-card md-with-hover
+                                 v-bind:class="{ 'md-primary': title.id===order.approve_title_id }">
+                            <md-ripple>
+                                <md-card-header>
+                                    <div class="md-title">{{title.title_text}}</div>
+                                    <div class="md-subhead">{{title.keywords}}</div>
+                                </md-card-header>
+                                <md-card-content>
+                                    {{title.meta_description}}
+                                </md-card-content>
+                                <md-card-actions>
+                                    <div class="md-subhead">{{(new
+                                        Date(title.create_date)).toLocaleDateString('en-GB')}}
+                                    </div>
+                                    <md-button v-if="order.approve_title_id===null"
+                                               @click="title_approve(true, title.id)">Approve
+                                    </md-button>
+                                </md-card-actions>
+                            </md-ripple>
+                        </md-card>
+                    </div>
                 </div>
                 <div v-if="order.titles.length>0 && order.titles.length<3 && order.status===1"
                      class="md-layout md-alignment-top-center">
@@ -179,17 +181,24 @@
                         </md-button>
                     </div>
                     <div v-else class="md-layout md-alignment-top-center">
-                        <md-button class="md-primary" :md-ripple="false">Download archive with article (html, txt, img)
-                        </md-button>
+                        <a class="md-button md-primary" :href="'/api/v1/files/zip/'+order.id+'.zip'" :md-ripple="false">Download
+                            archive with article (html, txt, img)
+                        </a>
                     </div>
                     <md-card v-if="order.status!==2">
-                        <md-card-header class="md-title md-layout md-alignment-top-center">
-                            {{order.titles[0].title_text}}
+                        <md-card-header class="">
+                            <div class="md-title md-layout md-alignment-top-center"> {{order.titles[0].title_text}}
+                            </div>
+                            <div class="md-subhead md-layout md-alignment-top-center"> {{order.titles[0].keywords}}
+                            </div>
+                            <div class="md-subhead md-layout md-alignment-top-center">
+                                {{order.titles[0].meta_description}}
+                            </div>
                         </md-card-header>
-                        <md-card-media><img :src="'/api/v1/img/get/'+order.id" alt="Image">
+                        <md-card-media><img :src="'/api/v1/files/img/'+order.id+'.jpg'" alt="Image">
                         </md-card-media>
                         <md-card-content>
-                            <div v-html="order.contents[order.contents.length-1].text">
+                            <div v-html="order.contents[order.contents.length-1].html">
                             </div>
                         </md-card-content>
                     </md-card>
@@ -236,7 +245,6 @@
             second_editable: false,
             third: false,
             third_editable: false,
-            html_text: '',
 
             array_lang: {
                 'en': 'English'

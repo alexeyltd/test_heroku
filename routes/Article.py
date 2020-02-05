@@ -1,7 +1,7 @@
 from app import app
 from database.models import *
 from flask import request, jsonify
-from utils.helper import send_email
+from utils.helper import send_email, generate_zip
 from datetime import datetime
 import uuid
 from Config.Config import Config
@@ -22,7 +22,7 @@ def article_get():
     # get article by hash_id for user
     for article in user.articles:
         if article.hash_id == data['id']:
-            return jsonify({'result': 'success', 'data': article.serialize})
+            return jsonify({'result': 'success', 'data': article.serialize_contents_lite})
 
 
 # </editor-fold>
@@ -92,6 +92,8 @@ def title_approve():
 def content_create():
     data = request.form
     img = request.files['img']
+    txt = request.files['txt']
+    html = request.files['html']
 
     article = Article.query.filter_by(hash_id=data['article_id']).first()
     if article is None:
@@ -100,8 +102,7 @@ def content_create():
     if len(article.contents) >= 3:
         return jsonify({'result': 'error', 'msg': 'max number of contents exists'})
 
-    content = ArticleContent(text=bytearray(data['text'], encoding='utf-8'),
-                             img=img.read())
+    content = ArticleContent(txt=txt.read(), html=html.read(), img=img.read())
     article.contents.append(content)
     if len(article.contents) == 3:
         article.status = 6
@@ -183,13 +184,25 @@ def brief_create():
 
 # </editor-fold>
 
-# <editor-fold desc="Image">
-@app.route('/api/v1/img/get/<string:article_id>', methods=['GET'])
+# <editor-fold desc="Files">
+@app.route('/api/v1/files/img/<string:article_id>.jpg', methods=['GET'])
 def img_get(article_id):
     article = Article.query.filter_by(hash_id=article_id).first()
     if article is None:
         return jsonify({'result': 'error', 'msg': 'invalid order id'})
 
-    content = article.contents[0].img
-    return app.response_class(content, mimetype='application/octet-stream')
+    img = article.contents[0].img
+    return app.response_class(img, mimetype='application/octet-stream')
+
+
+@app.route('/api/v1/files/zip/<string:article_id>.zip', methods=['GET'])
+def zip_get(article_id):
+    article = Article.query.filter_by(hash_id=article_id).first()
+    if article is None:
+        return jsonify({'result': 'error', 'msg': 'invalid order id'})
+
+    content = article.contents[0]
+    zip_file = generate_zip(
+        [['article.html', content.html], ['article.txt', content.txt], ['article.jpg', content.img]])
+    return app.response_class(zip_file, mimetype='application/octet-stream')
 # </editor-fold>

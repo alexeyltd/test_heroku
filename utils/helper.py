@@ -1,6 +1,8 @@
 import random
 import smtplib
 from Config.Config import Config
+import zipfile
+from io import BytesIO
 
 
 def generate_code(length):
@@ -21,3 +23,13 @@ def send_email(input_message, email_to=Config.gmail_user):
     msg = header + input_message
     smtpserver.sendmail(gmail_user, email_to, msg)
     smtpserver.close()
+
+
+def generate_zip(files):
+    mem_zip = BytesIO()
+
+    with zipfile.ZipFile(mem_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for f in files:
+            zf.writestr(f[0], f[1])
+
+    return mem_zip.getvalue()

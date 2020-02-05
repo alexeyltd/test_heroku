@@ -51,6 +51,20 @@ class User(db.Model):
         }
 
     @property
+    def serialize_contents_lite(self):
+        return {
+            'user_id': self.user_id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'business_name': self.business_name,
+            'confirm_status': self.confirm_status,
+            'articles': [i.serialize_contents_lite for i in self.articles],
+            'notifications': [i.serialize for i in self.notifications],
+            'role_admin': self.role_admin
+        }
+
+    @property
     def serialize_articles_lite(self):
         return [i.serialize for i in self.articles]
 
@@ -106,6 +120,22 @@ class Article(db.Model):
                        'current_domain_url': self.brief[0].current_domain_url}],
             'approve_title_id': self.approve_title_id,
             'approve_content_id': self.approve_content_id,
+        }
+
+    @property
+    def serialize_contents_lite(self):
+        return {
+            'id': self.hash_id,
+            'status': self.status,
+            'create_date': self.create_date,
+            'update_date': self.update_date,
+            'titles': [i.serialize for i in self.titles],
+            'brief': [i.serialize for i in self.brief],
+            'contents': [i.serialize_lite for i in self.contents],
+            'price': self.price,
+            'approve_title_id': self.approve_title_id,
+            'approve_content_id': self.approve_content_id,
+            'comment': self.comment
         }
 
 
@@ -174,8 +204,9 @@ class Brief(db.Model):
 class ArticleContent(db.Model):
     content_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    text = db.Column(db.LargeBinary, nullable=False)
     img = db.Column(db.LargeBinary, nullable=False)
+    txt = db.Column(db.LargeBinary, nullable=False)
+    html = db.Column(db.LargeBinary, nullable=False)
 
     article_id = db.Column(db.Integer, db.ForeignKey('article.article_id'))
     article = db.relationship('Article', backref='contents')
@@ -186,8 +217,19 @@ class ArticleContent(db.Model):
         return {
             'id': self.content_id,
             'create_date': self.create_date,
-            'text': self.text.decode("utf-8"),
-            'img': str(self.img)
+            'txt': str(self.txt),
+            'img': str(self.img),
+            'html': self.html.decode("utf-8")
+        }
+
+    @property
+    def serialize_lite(self):
+        return {
+            'id': self.content_id,
+            'create_date': self.create_date,
+            'txt': 'img',
+            'img': 'img',
+            'html': self.html.decode("utf-8")
         }
 
 

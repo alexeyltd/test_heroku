@@ -13,7 +13,7 @@ def admin_login():
     result = []
     users = User.query.all()
     for user in users:
-        result.append(user.serialize_full)
+        result.append(user.serialize_contents_lite)
     return jsonify({'result': 'success', 'data': result})
 
 
