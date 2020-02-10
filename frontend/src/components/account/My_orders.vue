@@ -29,8 +29,9 @@
                             <label>Content type</label>
                             <md-select v-model="form.content_type"
                                        :disabled="sending">
-                                <md-option></md-option>
                                 <md-option value="article">Article</md-option>
+                                <md-option value="product_description" disabled="true">Product Description (soon)</md-option>
+                                <md-option value="guest_posting" disabled="true">Guest Posting (soon)</md-option>
                             </md-select>
                         </md-field>
                     </div>
@@ -39,8 +40,10 @@
                             <label>Language</label>
                             <md-select v-model="form.content_language"
                                        :disabled="sending">
-                                <md-option></md-option>
                                 <md-option value="en">English</md-option>
+                                <md-option value="sp" disabled="true">Spanish (soon)</md-option>
+                                <md-option value="ge" disabled="true">Germany (soon)</md-option>
+                                <md-option value="fr" disabled="true">French (soon)</md-option>
                             </md-select>
                         </md-field>
                     </div>

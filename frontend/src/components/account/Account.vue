@@ -14,27 +14,56 @@
             </md-tabs>
         </div>
 
-        <div v-if="this.state==='settings'">
-            <div class="md-layout md-alignment-top-center">
-                <md-card>
-                    <md-card-header>
-                        <md-card-header-text>
-                            <div class="md-title">Account</div>
-                            <div class="md-subhead">User</div>
-                        </md-card-header-text>
-                        <md-card-media>
-                            <img :src="require('@/assets/profile.png')" alt="People">
-                        </md-card-media>
-                    </md-card-header>
-                    <md-card-content>
-                        <md-toolbar :md-elevation="1">
-                            <span class="md-title">{{this.user.first_name}} {{this.user.last_name}}</span>
-                        </md-toolbar>
-                        <md-toolbar :md-elevation="1">
-                            <span class="md-title">{{this.user.email}}</span>
-                        </md-toolbar>
-                    </md-card-content>
-                </md-card>
+        <div v-if="this.state==='settings'" class="md-layout">
+            <md-card class="md-layout-item">
+                <md-list class="md-double-line">
+                    <md-subheader>Account</md-subheader>
+                    <md-list-item>
+                        <md-avatar><img :src="require('@/assets/profile.png')" alt="People">
+                        </md-avatar>
+                        <div class="md-list-item-text">
+                            <span>{{this.user.first_name}} {{this.user.last_name}}</span>
+                            <span>Name</span>
+                        </div>
+                    </md-list-item>
+                    <md-divider></md-divider>
+                    <div v-if="this.user.phone">
+                        <md-subheader>Phone</md-subheader>
+                        <md-list-item>
+                            <div class="md-list-item-text">
+                                <span>{{this.user.phone||'None'}}</span>
+                                <span>Mobile</span>
+                            </div>
+                        </md-list-item>
+                        <md-divider></md-divider>
+                    </div>
+                    <md-subheader>Email</md-subheader>
+                    <md-list-item>
+                        <div class="md-list-item-text">
+                            <span>{{this.user.email}}</span>
+                            <span>Personal</span>
+                        </div>
+                    </md-list-item>
+                    <div v-if="this.user.business_name">
+                        <md-divider></md-divider>
+                        <md-subheader>Company</md-subheader>
+                        <md-list-item>
+                            <div class="md-list-item-text">
+                                <span>{{this.user.business_name||'None'}}</span>
+                                <span>Company</span>
+                            </div>
+                        </md-list-item>
+                    </div>
+                    <md-divider></md-divider>
+                    <md-list-item>
+                        <div class="md-list-item-text">
+                            <span><md-button class="md-primary" @click="recovery_user">Reset password</md-button></span>
+                        </div>
+                    </md-list-item>
+                </md-list>
+
+            </md-card>
+            <div class="md-layout-item">
                 <md-card>
                     <md-card-header>
                         <div class="md-title">Send message to your manager!
@@ -81,7 +110,7 @@
                     </md-button>
                 </div>
             </div>
-            <div v-for="notif in notifications_new">
+            <div v-bind:key="notif" v-for="notif in notifications_new">
                 <div>
                     <md-card>
                         <md-card-header>
@@ -99,7 +128,7 @@
                     </md-card>
                 </div>
             </div>
-            <div v-for="notif in notifications_old">
+            <div v-bind:key="notif" v-for="notif in notifications_old">
                 <div>
                     <md-card>
                         <md-card-header>
@@ -121,12 +150,10 @@
 </template>
 
 <script>
-    import Navbar from "../Navbar";
     import {mapState} from 'vuex';
 
     export default {
         name: "Account",
-        components: {Navbar},
         data: () => ({
             state: 'settings',
             code: null,
@@ -152,7 +179,22 @@
                     });
                 }
             },
-
+            recovery_user() {
+                let result = prompt('Reset password?', 'Type your email');
+                if (result) {
+                    this.$api.post("/account/recovery", {
+                        email: this.email,
+                    }).then((data) => {
+                        if (data.data.result === 'success') {
+                            this.$snotify.info('We send new password on your email!')
+                        } else {
+                            this.$snotify.error(data.data.msg)
+                        }
+                    }).catch(e => {
+                        this.$snotify.error(`Error status ${e.response.status}`);
+                    });
+                }
+            },
             change_state(state) {
                 if (state === 'notifications') {
                     this.get_notify();

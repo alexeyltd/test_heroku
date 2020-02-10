@@ -25,7 +25,6 @@ Vue.use(Snotify, {
     }
 });
 
-// you may call it in components with this.$api
 Vue.prototype.$api = api;
 
 const store = new Vuex.Store({

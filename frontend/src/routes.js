@@ -5,13 +5,27 @@ import Products from "./components/Products";
 import Faq from "./components/Faq";
 import Order from "./components/account/Order";
 import Admin from "./components/Admin/Admin";
+import Index from "./components/Index";
+import Privacy from "./components/Privacy";
 
 
 const routes = [
     {
         path: "/",
-        component: Products,
+        component: Index,
         name: "indexPage",
+        meta: {}
+    },
+    {
+        path: "/home",
+        component: Index,
+        name: "indexPage",
+        meta: {}
+    },
+    {
+        path: "/privacy",
+        component: Privacy,
+        name: "privacyPage",
         meta: {}
     },
     {
@@ -32,12 +46,12 @@ const routes = [
         name: "ordersPage",
         meta: {}
     },
-    {
-        path: "/products",
-        component: Products,
-        name: "productsPage",
-        meta: {}
-    },
+    // {
+    //     path: "/products",
+    //     component: Products,
+    //     name: "productsPage",
+    //     meta: {}
+    // },
     {
         path: "/faq",
         component: Faq,
