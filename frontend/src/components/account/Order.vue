@@ -1,5 +1,5 @@
 <template>
-    <div v-if="order">
+    <div v-if="order" class="container">
         <md-card>
             <md-card-header>
                 <div class="md-layout md-alignment-top-center md-title">Stage now: {{totally_status}}
@@ -13,16 +13,14 @@
                                  :md-buffer="progress_buffer"></md-progress-bar>
             </md-card-content>
         </md-card>
-        <md-steppers class="md-layout md-alignment-top-center" :md-active-step.sync="active">
+        <md-steppers class="md-layout md-alignment-top-center mt-2" :md-active-step.sync="active">
             <md-step id="first" md-label="Brief" md-description="Your order info here" :md-editable="true"
                      :md-done.sync="first">
                 <div class="md-layout md-alignment-top-center">
-                    <div class="md-title">BRIEF</div>
+                    <div class="md-title mb-2">BRIEF</div>
                 </div>
                 <md-card>
                     <md-list class="md-double-line">
-                        <md-subheader>{{order.id}}</md-subheader>
-
                         <md-list-item>
                             <div class="md-list-item-text">
                                 <span>{{order.id.slice(0,8)}}</span>
@@ -110,7 +108,7 @@
                      :md-editable="true"
                      :md-done.sync="second">
                 <div class="md-layout md-alignment-top-center">
-                    <div class="md-title">TITLES</div>
+                    <div class="md-title mb-2">TITLES</div>
                 </div>
                 <div v-if="order.status!==0">
                     <div v-bind:key="title" v-for="title in order.titles">
@@ -156,7 +154,7 @@
                      :md-editable="third_editable"
                      :md-done.sync="third">
                 <div class="md-layout md-alignment-top-center">
-                    <div class="md-title">ARTICLE</div>
+                    <div class="md-title mb-2">ARTICLE</div>
                 </div>
                 <div v-if="order.status===2" class="md-layout md-alignment-top-center">
                     <md-empty-state
@@ -223,6 +221,11 @@
                 </md-button>
             </md-dialog-actions>
         </md-dialog>
+    </div>
+    <div v-else>
+        <div class="md-layout md-alignment-top-center">
+            <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+        </div>
     </div>
 </template>
 

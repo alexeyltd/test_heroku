@@ -9,9 +9,9 @@
                     </md-empty-state>
                 </div>
             </div>
-            <div class="md-layout md-alignment-bottom-center">
-                <md-button class="md-fab md-primary" @click="form_show=true">
-                    <md-icon>{{text_form_show}}</md-icon>
+            <div class="md-layout md-alignment-bottom-center mb-3">
+                <md-button class="md-primary md-raised btn-lg" @click="form_show=true">
+                    Create new brief
                 </md-button>
             </div>
         </div>
@@ -30,7 +30,8 @@
                             <md-select v-model="form.content_type"
                                        :disabled="sending">
                                 <md-option value="article">Article</md-option>
-                                <md-option value="product_description" disabled="true">Product Description (soon)</md-option>
+                                <md-option value="product_description" disabled="true">Product Description (soon)
+                                </md-option>
                                 <md-option value="guest_posting" disabled="true">Guest Posting (soon)</md-option>
                             </md-select>
                         </md-field>
@@ -51,30 +52,48 @@
                 <md-field>
                     <label>Current domain url</label>
                     <md-input v-model="form.current_domain_url"></md-input>
+                    <md-tooltip md-direction="bottom">Enter your blog/domain URL, so that our writers can see what your
+                        company does and study some examples of your copywriting style and tone of voice.
+                    </md-tooltip>
+                    <div class="md-helper-text">example.com</div>
                 </md-field>
                 <md-field>
                     <label>Topic suggestions</label>
                     <md-input v-model="form.topic_suggestions" md-autogrows></md-input>
+                    <md-tooltip md-direction="bottom">Enter a topic your article/content should be focused on. What do
+                        you want to describe with this piece?
+                    </md-tooltip>
                 </md-field>
                 <md-field>
                     <label>Intended result</label>
-                    <md-input v-model="form.intended_result" md-autogrow></md-input>
+                    <md-textarea v-model="form.intended_result" md-autogrow></md-textarea>
+                    <md-tooltip md-direction="bottom">Describe what you expect from people after they read your
+                        article/content. What are the steps they should take? What emotions should your content convey
+                        to your readers?
+                    </md-tooltip>
                 </md-field>
                 <md-field>
                     <label>Target customer</label>
                     <md-input v-model="form.target_customer"></md-input>
+                    <md-tooltip md-direction="bottom">Describe the target audience for this article/content. Which
+                        people do you want to reach with this piece?
+                    </md-tooltip>
                 </md-field>
+                <md-chips class="md-primary pulse-on-error" v-model="form.suggested_keywords"
+                          md-placeholder="Add key words (optional)" md-check-duplicated></md-chips>
                 <md-field>
-                    <label>Suggested keywords</label>
-                    <md-input v-model="form.suggested_keywords"></md-input>
-                </md-field>
-                <md-field>
-                    <label>Specific request(s)</label>
+                    <label>Specific requests and instructions (optional)</label>
                     <md-input v-model="form.specific_request" md-autogrow></md-input>
+                    <md-tooltip md-direction="bottom">Make a note of specific things to mention or avoid in this piece.
+                        You can also tell us about competitors that you don’t want to mention.
+                    </md-tooltip>
                 </md-field>
                 <md-field>
-                    <label>Competitors</label>
+                    <label>Competitors (optional)</label>
                     <md-input v-model="form.competitors" md-autogrow></md-input>
+                    <md-tooltip md-direction="bottom">Mention your main competitors, so that our writers can take a look
+                        at what they do and write about.
+                    </md-tooltip>
                 </md-field>
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item md-small-size-100">
@@ -85,12 +104,12 @@
                                       min="500" max="2000" step="250" value="500"/>
                         </md-field>
                     </div>
-                    <div class="md-layout-item md-small-size-100">
-                        <div class="md-title">{{form.content_length*0.01}}$</div>
-                    </div>
                 </div>
             </md-dialog-content>
             <md-dialog-actions>
+                <div class="md-layout  md-alignment-top-center">
+                    <div class="md-title">{{form.content_length*0.01}}$</div>
+                </div>
                 <md-button type="button" class="md-primary"
                            @click="create_brief" :disabled="sending">Create brief
                 </md-button>
@@ -152,7 +171,7 @@
                 topic_suggestions: '',
                 intended_result: '',
                 target_customer: '',
-                suggested_keywords: '',
+                suggested_keywords: ['Example keyword'],
                 specific_request: '',
                 competitors: ''
             },
@@ -193,6 +212,7 @@
             },
             create_brief() {
                 this.form_show = false;
+                this.form.suggested_keywords = this.form.suggested_keywords.join('; ');
                 this.$api.post("/brief/create", {
                     email: this.user.email,
                     brief: this.form
@@ -207,6 +227,7 @@
                     this.$snotify.error(`Error status ${e.response.status}`);
                 });
                 this.clear_form();
+                this.form.suggested_keywords = [];
             },
             go_order(order) {
                 this.$router.push({

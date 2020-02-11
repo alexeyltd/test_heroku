@@ -1,30 +1,11 @@
 <template>
-    <footer class="section footer-classic">
+    <footer class="section footer-classic mt-5 " style="margin-bottom: 0">
         <div class="footer-classic-divider hr container">
             <hr/>
         </div>
         <div class="footer-classic-main">
             <div class="container">
                 <div class="row row-50 justify-content-lg-between">
-                    <!--<div class="col-sm-7 col-lg-3 col-xl-2">-->
-                        <!--<div class="box-style-1"><a class="brand" href="index.html"><img-->
-                                <!--class="brand-logo-dark" src="images/logo-default-370x84.png" alt=""-->
-                                <!--width="185" height="42"/></a>-->
-                            <!--<p><span style="max-width: 250px;">We provide quality marketing and PR services to our clients.</span>-->
-                            <!--</p>-->
-                            <!--<md-button class="md-primary"-->
-                                       <!--to="/login">Sign In-->
-                            <!--</md-button>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="col-sm-5 col-lg-3 col-xl-2">-->
-                        <!--<h4 class="footer-classic-title">Quick Links</h4>-->
-                        <!--<ul class="list footer-classic-list">-->
-                            <!--<li><a href="about-us.html">About Us</a></li>-->
-                            <!--<li><a href="careers.html">Careers</a></li>-->
-                            <!--<li><a href="services.html">Services</a></li>-->
-                        <!--</ul>-->
-                    <!--</div>-->
                     <div class="col-sm-7 col-lg-5 col-xl-3">
                         <h4 class="footer-classic-title">Navigation</h4>
                         <ul class="list footer-classic-list footer-classic-list_2-cols">
@@ -32,7 +13,8 @@
                                 <router-link to="/home">Home</router-link>
                             </a></li>
                             <li><a class="md-primary">
-                                <router-link to="/login">Sign Up</router-link>
+                                <router-link v-if="login" to="/account">Account</router-link>
+                                <router-link v-else to="/login">Sign Up</router-link>
                             </a></li>
                             <li><a class="md-primary">
                                 <router-link to="/privacy">Privacy politics</router-link>
@@ -74,12 +56,21 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex';
+
     export default {
-        name: "Footer"
+        name: "Footer",
+        computed: mapState([
+            'user', 'login'
+        ]),
     }
 </script>
 
 <style scoped>
     @import "../css/bootstrap.css";
     @import "../css/style.css";
+
+    .custom-footer {
+        bottom: 0;
+    }
 </style>

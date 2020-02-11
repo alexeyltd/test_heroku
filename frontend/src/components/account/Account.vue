@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class="md-layout md-alignment-top-center">
+    <div class="container">
+        <div class="md-layout md-alignment-top-center mb-2">
             <md-tabs>
                 <template slot="md-tab" slot-scope="{ tab }">
                     {{ tab.label }} <i class="badge" v-if="tab.data.badge">{{ tab.data.badge }}</i>
@@ -10,7 +10,6 @@
                         :md-template-data="{ badge: notifications_new.length }"
                         @click="change_state('notifications')"></md-tab>
                 <md-tab id="tab-sign_out" md-label="Sign out" @click="sigh_out"></md-tab>
-
             </md-tabs>
         </div>
 
@@ -78,11 +77,13 @@
                         </md-field>
                     </md-card-content>
                     <md-card-actions>
-                        <md-button class="md-primary" @click="send_message()">
+                        <md-button v-if="!load_state" class="md-primary" @click="send_message()">
                             Send
                         </md-button>
+                        <md-progress-spinner v-if="load_state" md-mode="indeterminate"></md-progress-spinner>
                     </md-card-actions>
                 </md-card>
+
             </div>
             <div v-if="this.user.confirm_status===0">
                 <div class="md-layout md-alignment-top-center">
@@ -159,11 +160,13 @@
             code: null,
             notifications_new: [],
             notifications_old: [],
-            message: null
+            message: null,
+            load_state: false
         }),
         methods: {
             send_message() {
                 if (this.message !== null) {
+                    this.load_state = true;
                     this.$api.post("/admin/message/create", {
                         email: this.user.email,
                         message: this.message
@@ -174,7 +177,11 @@
                         } else {
                             this.$snotify.error(data.data.msg)
                         }
+                        this.load_state = false;
+
                     }).catch(e => {
+                        this.load_state = false;
+
                         this.$snotify.error(`Error status ${e.response.status}`);
                     });
                 }
