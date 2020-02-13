@@ -16,9 +16,6 @@
         <md-steppers class="md-layout md-alignment-top-center mt-2" :md-active-step.sync="active">
             <md-step id="first" md-label="Brief" md-description="Your order info here" :md-editable="true"
                      :md-done.sync="first">
-                <div class="md-layout md-alignment-top-center">
-                    <div class="md-title mb-2">BRIEF</div>
-                </div>
                 <md-card>
                     <md-list class="md-double-line">
                         <md-list-item>
@@ -107,12 +104,10 @@
             <md-step id="second" md-label="Titles" md-description="Titles here"
                      :md-editable="true"
                      :md-done.sync="second">
-                <div class="md-layout md-alignment-top-center">
-                    <div class="md-title mb-2">TITLES</div>
-                </div>
-                <div v-if="order.status!==0">
-                    <div v-bind:key="title" v-for="title in order.titles">
-                        <md-card md-with-hover
+                <div class="md-alignment-top-center" v-if="order.status!==0">
+                    <div class="md-layout md-alignment-top-center" v-bind:key="title" v-for="title in order.titles">
+                        <md-card class="md-layout-item md-size-50"
+                                 md-with-hover
                                  v-bind:class="{ 'md-primary': title.id===order.approve_title_id }">
                             <md-ripple>
                                 <md-card-header>
@@ -153,9 +148,6 @@
             <md-step id="third" md-label="Article" md-description="Whole set for now"
                      :md-editable="third_editable"
                      :md-done.sync="third">
-                <div class="md-layout md-alignment-top-center">
-                    <div class="md-title mb-2">ARTICLE</div>
-                </div>
                 <div v-if="order.status===2" class="md-layout md-alignment-top-center">
                     <md-empty-state
                             md-label="Article creation..."
