@@ -16,7 +16,7 @@
                 </div>
                 <!--</md-tabs>-->
                 <div v-if="$store.state.login===false">
-                    <md-button to="/login">Sign in</md-button>
+                    <md-button to="/login" style="color: white">Sign in</md-button>
                 </div>
             </md-toolbar>
         </div>
