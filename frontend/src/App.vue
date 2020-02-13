@@ -1,7 +1,7 @@
 <template>
     <div>
         <md-app>
-            <md-app-toolbar class="md-grad md-small" style="background-image: linear-gradient(to right, #9a5ae4, #5128c1)">
+            <md-app-toolbar style="background-image: linear-gradient(to right, #9a5ae4, #5128c1)">
                 <div class="container">
                     <navbar></navbar>
                 </div>
@@ -31,8 +31,8 @@
     @import "~vue-material/dist/theme/engine"; // Import the theme engine
 
     @include md-register-theme("default", (
-            primary: #9a5ae4, // The primary color of your application
-            accent: #9a5ae4,
+            primary: #5128c1, // The primary color of your application
+            accent: #5128c1,
             whitetheme: white
     ));
     @import "~vue-material/dist/theme/all"; // Apply the theme

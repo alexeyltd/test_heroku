@@ -2,7 +2,7 @@
     <section>
         <div class="container">
             <header class="section page-header page-header-2">
-                <section class="section parallax-container bg-accent bg-overlay-1"
+                <section class="section parallax-container "
                          data-parallax-img="images/bg-image-3.jpg">
                     <div class="parallax-content">
                         <!-- FScreen-->
@@ -21,12 +21,12 @@
                                             provide SEO Optimised <br class="d-none d-sm-block">blog/article posts and
                                             product descriptions in < 24hours. </h4> <a
                                             class="button button-secondary button-shadow button-winona wow clipInLeft"
-                                            href="#how-it-works" data-wow-delay=".2s" style="margin-top: 20px;">Learn
+                                            href="#works" data-wow-delay=".2s" style="margin-top: 20px;">Learn
                                         More</a>
                                     </div>
                                     <div class="col-md-5 d-none d-md-block text-center">
                                         <div class="wow fadeIn" data-wow-delay=".22s"><img
-                                                src="images/image-1-425x512.png" alt="" width="425" height="512"/>
+                                                src="../images/image-1-425x512.png" alt="" width="425" height="512"/>
                                         </div>
                                     </div>
                                 </div>
@@ -35,12 +35,13 @@
                     </div>
                 </section>
             </header>
-            <section class="section section-md bg-gray-100 bg-image-1 text-center" id="features">
+            <!-- why choose us-->
+            <section class="section section-md  text-center" id="features">
                 <div class="container">
                     <h3 class="wow fadeIn">Why Choose Us</h3>
                     <carousel autoplay="true" :nav="false"
-                              :items="1">
-                        <article class="box-modern wow fadeIn" data-anime="circles-2">
+                              :items="1" >
+                        <article class="box-modern wow fadeIn bg-gray-100 bg-image-1" data-anime="circles-2">
                             <div class="box-modern-media">
                                 <div class="box-modern-icon mdi mdi-briefcase-check"></div>
                                 <svg class="box-modern-circle" width="108" height="112.72" viewBox="0 0 108 112.72">
@@ -55,7 +56,7 @@
                             </div>
                         </article>
                         <!-- Box Modern-->
-                        <article class="box-modern wow fadeIn" data-anime="circles-2">
+                        <article class="box-modern wow fadeIn bg-gray-100 bg-image-1" data-anime="circles-2">
                             <div class="box-modern-media">
                                 <div class="box-modern-icon mdi mdi-crown"></div>
                                 <svg class="box-modern-circle" width="108" height="112.72" viewBox="0 0 108 112.72">
@@ -69,7 +70,7 @@
                             </div>
                         </article>
                         <!-- Box Modern-->
-                        <article class="box-modern wow fadeIn" data-anime="circles-2">
+                        <article class="box-modern wow fadeIn bg-gray-100 bg-image-1" data-anime="circles-2">
                             <div class="box-modern-media">
                                 <div class="box-modern-icon mdi mdi-diamond"></div>
                                 <svg class="box-modern-circle" width="108" height="112.72" viewBox="0 0 108 112.72">
@@ -96,7 +97,7 @@
                                 specialised for each request with guaranteed express delivery.</p>
                         </div>
                         <div class="col-md-4 col-lg-5">
-                            <div class="figure-1"><img src="images/image-2-491x428.png" alt="" width="491"
+                            <div class="figure-1"><img src="../images/image-2-491x428.png" alt="" width="491"
                                                        height="428"/>
                             </div>
                         </div>
@@ -104,66 +105,68 @@
                 </div>
             </section>
             <!-- How We Work-->
-            <section class="section section-lg bg-image-3 bg-decor-1" id="how-it-works">
-                <div class="container layout-5-outer context-dark">
-                    <div class="layout-5">
-                        <h3 class="wow clipInLeft">How We Work</h3>
-                        <div class="owl-carousel-box-light-nav wow clipInRight" id="how-it-works-owl-nav"></div>
+            <section class="section section-md text-center" id="works">
+                <div class="container">
+                    <h3>How does it work?</h3>
+                    <div class="row justify-content-center justify-content-lg-between">
+                        <div class="col-md-10 col-lg-5 col-xl-4">
+                            <div class="section-md">
+                                <h3>Order any size content for your blog or article</h3>
+                                <p class="big offset-top-3">We offer high quality SEO Optimised Content for your blog or
+                                    website based on your needs.</p><a
+                                    class="button button-primary-outline button-winona">
+                                <router-link to="/faq">View More</router-link>
+                            </a>
+                            </div>
+                        </div>
+                        <div class="col-md-10 col-lg-7">
+                            <div class="timeline-classic timeline-classic_1">
+                                <div class="timeline-classic-item">
+                                    <div class="timeline-classic-item-inner">
+                                        <div class="timeline-classic-item-decoration"></div>
+                                        <p class="timeline-classic-title"><span class="text-primary">Send a brief</span>
+                                        </p>
+                                        <div class="timeline-classic-text">
+                                            <p>Complete a form with your brief details to place an order.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline-classic-item">
+                                    <div class="timeline-classic-item-inner">
+                                        <div class="timeline-classic-item-decoration"></div>
+                                        <p class="timeline-classic-title"><span
+                                                class="text-primary">Receive a title</span></p>
+                                        <div class="timeline-classic-text">
+                                            <p>After your brief is sent, you’ll receive a title for your future article
+                                                within 24 hours.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline-classic-item">
+                                    <div class="timeline-classic-item-inner">
+                                        <div class="timeline-classic-item-decoration"></div>
+                                        <p class="timeline-classic-title"><span
+                                                class="text-primary">Title is approved</span></p>
+                                        <div class="timeline-classic-text">
+                                            <p>After you approve the title, a copywriter will begin creating an article
+                                                and send it to you within 3 working days.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline-classic-item">
+                                    <div class="timeline-classic-item-inner">
+                                        <div class="timeline-classic-item-decoration"></div>
+                                        <p class="timeline-classic-title"><span class="text-primary">Download your article</span>
+                                        </p>
+                                        <div class="timeline-classic-text">
+                                            <p>When you approve the article, you’ll be able to download the article & an
+                                                image, and publish on your website.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="container" data-wow-delay=".1s">
-                    <carousel autoplay="true" :nav="false"
-                              :items="1">
-                        <template slot="prev"></template>
-                        <article class="box-light">
-                            <div class="box-light-counter">01</div>
-                            <h4 class="box-light-title"><a href="#">Send a brief</a></h4>
-                            <div class="box-light-main">
-                                <p>Complete a form with your brief details to place an order.</p>
-                            </div>
-                            <div class="box-light-footer"><a
-                                    class="button button-sm button-default-outline button-icon button-icon-right button-winona"
-                                    href="contact-us.html"><span class="icon mdi mdi-arrow-right"></span>Contact Us</a>
-                            </div>
-                        </article>
-                        <article class="box-light">
-                            <div class="box-light-counter">02</div>
-                            <h4 class="box-light-title"><a href="#">Receive a title</a></h4>
-                            <div class="box-light-main">
-                                <p>After your brief is sent, you’ll receive a title for your future article within 24
-                                    hours.</p>
-                            </div>
-                            <div class="box-light-footer"><a
-                                    class="button button-sm button-default-outline button-icon button-icon-right button-winona"
-                                    href="contact-us.html"><span class="icon mdi mdi-arrow-right"></span>Contact Us</a>
-                            </div>
-                        </article>
-                        <article class="box-light">
-                            <div class="box-light-counter">03</div>
-                            <h4 class="box-light-title"><a href="#">Title is approved</a></h4>
-                            <div class="box-light-main">
-                                <p>After you approve the title, a copywriter will begin creating an article and send it
-                                    to you within 3 working days.</p>
-                            </div>
-                            <div class="box-light-footer"><a
-                                    class="button button-sm button-default-outline button-icon button-icon-right button-winona"
-                                    href="contact-us.html"><span class="icon mdi mdi-arrow-right"></span>Contact Us</a>
-                            </div>
-                        </article>
-                        <article class="box-light">
-                            <div class="box-light-counter">04</div>
-                            <h4 class="box-light-title"><a href="#">Download your article</a></h4>
-                            <div class="box-light-main">
-                                <p>When you approve the article, you’ll be able to download the article & an image, and
-                                    publish on your website.</p>
-                            </div>
-                            <div class="box-light-footer"><a
-                                    class="button button-sm button-default-outline button-icon button-icon-right button-winona"
-                                    href="contact-us.html"><span class="icon mdi mdi-arrow-right"></span>Contact Us</a>
-                            </div>
-                        </article>
-                        <template slot="next"></template>
-                    </carousel>
                 </div>
             </section>
             <!-- Subscribe to Get Notified!-->
@@ -175,7 +178,7 @@
                             <p class="big">Sign up to receive updates and fresh news from us.</p>
                             <form class="rd-form rd-mailform form-inline form-shadow block-11 ot30"
                                   data-form-output="form-output-global" data-form-type="subscribe" method="post"
-                                  action="bat/rd-mailform.php">
+                            >
                                 <div class="form-wrap">
                                     <input class="form-input" id="subscribe-form-email" type="email" name="email"
                                            data-constraints="@Email @Required">

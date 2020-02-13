@@ -37,7 +37,12 @@
 
         <md-card-actions>
             <div class="md-layout md-alignment-top-left">
-                <md-checkbox v-model="accept" class="md-primary">Accept privacy</md-checkbox>
+                <div>
+                    <md-checkbox v-model="accept" class="md-primary">
+                        <router-link to="/privacy">Privacy policy</router-link>
+                    </md-checkbox>
+
+                </div>
             </div>
             <md-button type="button" class="md-primary" @click="create_user">Create account</md-button>
         </md-card-actions>

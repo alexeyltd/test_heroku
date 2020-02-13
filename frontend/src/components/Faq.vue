@@ -1,19 +1,15 @@
 <template>
     <section class="section section-md">
         <div class="container">
+            <div class="md-layout md-alignment-top-center mb-2">
+                <div class="md-title"><strong>Frequently Asked Questions</strong></div>
+            </div>
             <div class="md-layout md-gutter">
-                <md-list class="md-layout-item md-size-30">
-                    <md-list-item>
-                        <md-button href="#q1" class="md-primary">When ready?</md-button>
-                    </md-list-item>
-                    <md-list-item>
-                        <md-button href="#q2" class="md-primary">How I know?</md-button>
-                    </md-list-item>
-                </md-list>
-                <div class="md-layout-item md-size-70">
-                    <md-card id='q1' class="mb-2" md-with-hover>
+                <div class="md-layout-item">
+                    <md-card class="mb-2 card-classic" md-with-hover>
                         <md-card-header>
-                            <md-card-header-text><strong>When will my content order be ready?</strong>
+                            <md-card-header-text><strong>Do
+                                you provide SEO Optimised Content?</strong>
                             </md-card-header-text>
                             <md-card-expand-trigger>
                                 <md-button class="md-fab md-mini md-primary">
@@ -24,21 +20,18 @@
                         <md-card-expand>
                             <md-card-expand-content>
                                 <md-card-content>
-                                    The content writing process takes two steps:
-                                    ->Creating a title and meta-description takes 2 working days from placing an order
-                                    with completed brief details;
-                                    ->Creating a content piece takes 10 working days from your approval of the title and
-                                    meta-description.
-                                    Revising title and meta-description and introducing changes to the content piece
-                                    takes additional time.
+                                    <p>Yes we do! We provide high quality search engine optimised content. Our
+                                        interactive content order flow enables you to revise the content and specify
+                                        changes you would like to include in your order. From there, we will be sure to
+                                        incorporate these changes throughout your content.</p>
                                 </md-card-content>
                             </md-card-expand-content>
                         </md-card-expand>
                     </md-card>
-                    <md-card id='q2' class="mb-2" md-with-hover>
+                    <md-card class="mb-2 card-classic" md-with-hover>
                         <md-card-header>
-                            <md-card-header-text><strong>How will I know that my title and meta-description are ready
-                                for review?</strong>
+                            <md-card-header-text><strong>When
+                                will my content order be ready?</strong>
                             </md-card-header-text>
                             <md-card-expand-trigger>
                                 <md-button class="md-fab md-mini md-primary">
@@ -49,20 +42,21 @@
                         <md-card-expand>
                             <md-card-expand-content>
                                 <md-card-content>
-                                    A notification will be sent to the email address that you specified during
-                                    registration. Your order will also be marked as ‘Ready for Review’ on your
-                                    <a class="md-primary">
-                                        <router-link to="/orders">Orders</router-link>
-                                    </a>
-                                    .
+                                    <p>The content writing process takes two steps: <br>
+                                        Creating a title, meta-description and keywords takes no more than 24 hours from
+                                        placing an order with completed brief details; <br>
+                                        Creating a content piece takes 3 working days from your approval of the title,
+                                        meta-description and keywords. <br>
+                                        Revising title, meta-description and keywords and introducing changes to the
+                                        content piece takes additional time.</p>
                                 </md-card-content>
                             </md-card-expand-content>
                         </md-card-expand>
                     </md-card>
-                    <md-card id='q3' class="mb-2" md-with-hover>
+                    <md-card class="mb-2 card-classic" md-with-hover>
                         <md-card-header>
-                            <md-card-header-text><strong>How will I know that my content order is written and ready for
-                                review?</strong>
+                            <md-card-header-text><strong>How
+                                do you guarantee 100% unique content?</strong>
                             </md-card-header-text>
                             <md-card-expand-trigger>
                                 <md-button class="md-fab md-mini md-primary">
@@ -73,16 +67,136 @@
                         <md-card-expand>
                             <md-card-expand-content>
                                 <md-card-content>
-                                    You can request changes 3 times each for both title & meta-description and the
-                                    content piece.
+                                    <p>We have you covered. Each content is scanned using a Google-approved tool called
+                                        Copyscape.
+                                        Copyscape takes the content your writer has created and scans the entire
+                                        internet to make sure there’s no duplicate content anywhere on the web.
+                                        You do not need to worry about duplicate content with Crowd Content writers.</p>
+                                </md-card-content>
+                            </md-card-expand-content>
+                        </md-card-expand>
+                    </md-card>
+                    <md-card class="mb-2 card-classic" md-with-hover>
+                        <md-card-header>
+                            <md-card-header-text><strong>Can
+                                I request changes?</strong>
+                            </md-card-header-text>
+                            <md-card-expand-trigger>
+                                <md-button class="md-fab md-mini md-primary">
+                                    <md-icon>+</md-icon>
+                                </md-button>
+                            </md-card-expand-trigger>
+                        </md-card-header>
+                        <md-card-expand>
+                            <md-card-expand-content>
+                                <md-card-content>
+                                    <p>You can request changes right in your dashbord by leaving a comment specifying
+                                        what you want to change in the content piece.</p>
+                                </md-card-content>
+                            </md-card-expand-content>
+                        </md-card-expand>
+                    </md-card>
+                    <md-card class="mb-2 card-classic" md-with-hover>
+                        <md-card-header>
+                            <md-card-header-text><strong>How
+                                many times can I request changes?</strong>
+                            </md-card-header-text>
+                            <md-card-expand-trigger>
+                                <md-button class="md-fab md-mini md-primary">
+                                    <md-icon>+</md-icon>
+                                </md-button>
+                            </md-card-expand-trigger>
+                        </md-card-header>
+                        <md-card-expand>
+                            <md-card-expand-content>
+                                <md-card-content>
+                                    <p>You can request changes up to 3 times for each title, meta-description and
+                                        keywords and the content piece.</p>
+                                </md-card-content>
+                            </md-card-expand-content>
+                        </md-card-expand>
+                    </md-card>
+                    <md-card class="mb-2 card-classic" md-with-hover>
+                        <md-card-header>
+                            <md-card-header-text><strong>Can
+                                I get images with my content?</strong>
+                            </md-card-header-text>
+                            <md-card-expand-trigger>
+                                <md-button class="md-fab md-mini md-primary">
+                                    <md-icon>+</md-icon>
+                                </md-button>
+                            </md-card-expand-trigger>
+                        </md-card-header>
+                        <md-card-expand>
+                            <md-card-expand-content>
+                                <md-card-content>
+                                    <p>Absolutely! With each order we provide a relevant unique image for free!</p>
+                                </md-card-content>
+                            </md-card-expand-content>
+                        </md-card-expand>
+                    </md-card>
+                    <md-card class="mb-2 card-classic" md-with-hover>
+                        <md-card-header>
+                            <md-card-header-text><strong>Can
+                                I cancel the order and get a refund?</strong>
+                            </md-card-header-text>
+                            <md-card-expand-trigger>
+                                <md-button class="md-fab md-mini md-primary">
+                                    <md-icon>+</md-icon>
+                                </md-button>
+                            </md-card-expand-trigger>
+                        </md-card-header>
+                        <md-card-expand>
+                            <md-card-expand-content>
+                                <md-card-content>
+                                    <p>If you’re not happy with the final result of your content piece after 3 times of
+                                        revision, you can cancel your order and get a refund. To do so, send an email to
+                                        info@orderloo.com specifying reasons for a refund.</p></md-card-content>
+                            </md-card-expand-content>
+                        </md-card-expand>
+                    </md-card>
+                    <md-card class="mb-2 card-classic" md-with-hover>
+                        <md-card-header>
+                            <md-card-header-text><strong>How
+                                can I pay for my order?</strong>
+                            </md-card-header-text>
+                            <md-card-expand-trigger>
+                                <md-button class="md-fab md-mini md-primary">
+                                    <md-icon>+</md-icon>
+                                </md-button>
+                            </md-card-expand-trigger>
+                        </md-card-header>
+                        <md-card-expand>
+                            <md-card-expand-content>
+                                <md-card-content>
+                                    <p>We accept Visa, MasterCard, and American Express credit and debit cards for your
+                                        convenience.</p>
+                                </md-card-content>
+                            </md-card-expand-content>
+                        </md-card-expand>
+                    </md-card>
+                    <md-card class="mb-2 card-classic" md-with-hover>
+                        <md-card-header>
+                            <md-card-header-text><strong>What
+                                languages are available for ordering content?</strong>
+                            </md-card-header-text>
+                            <md-card-expand-trigger>
+                                <md-button class="md-fab md-mini md-primary">
+                                    <md-icon>+</md-icon>
+                                </md-button>
+                            </md-card-expand-trigger>
+                        </md-card-header>
+                        <md-card-expand>
+                            <md-card-expand-content>
+                                <md-card-content>
+                                    <p>At the moment, you can order content in British English, American English and
+                                        British Australian. However, we will expand the number of available languages in
+                                        the near future.</p>
                                 </md-card-content>
                             </md-card-expand-content>
                         </md-card-expand>
                     </md-card>
                 </div>
-            </div>
-            <div class="md-layout md-alignment-top-center">
-                <md-button class="md-primary" href="#">Go to begin</md-button>
             </div>
         </div>
     </section>
