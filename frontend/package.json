@@ -12,7 +12,7 @@
     "bootstrap-vue": "^2.0.0-rc.27",
     "core-js": "^2.6.5",
     "lodash": "latest",
-    "marked": "^0.8.0",
+    "marked": "^4.0.10",
     "node-sass": "^4.13.1",
     "sass-loader": "^7.1.0",
     "vue": "^2.6.10",
